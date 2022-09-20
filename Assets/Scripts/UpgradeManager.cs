@@ -13,6 +13,6 @@ public class UpgradeManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //OnUpgradeButton click -- get upgrade cost, compare vs player money, if player money is >= cost apply next rank in tree.
     }
 }
