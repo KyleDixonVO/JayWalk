@@ -33,7 +33,7 @@ public class UI_Manager : MonoBehaviour
         HealthText.text = "Health: " + Player.GetComponent<PlayerStats>().health + "/" + Player.GetComponent<PlayerStats>().maxHealth;
         CompletionText.text = "Level Progress: ";
         HealthFraction = ((float)Player.GetComponent<PlayerStats>().health / (float)Player.GetComponent<PlayerStats>().maxHealth);
-        Debug.Log(HealthFraction);
+        //Debug.Log(HealthFraction);
         healthSlider.value = HealthFraction;
         levelLength = GameObject.Find("LaneParent").GetComponent<LaneParent>().levelLength;
         completionSlider.value = ((float)Player.transform.position.y / (float)levelLength);

@@ -7,7 +7,17 @@ public class PlayerStats : MonoBehaviour
     public int maxHealth = 3;
     public int health;
     public int currency;
+    public float invincibilityTime;
+    public float laneSwapSpeed;
+    public float jumpCooldown;
+    public float jumpIFrames;
+
     public bool isAlive;
+    public bool wingsEnabled;
+    public bool canJump;
+    public bool isJumping;
+    public bool invincible;
+
 
     // Start is called before the first frame update
     void Start()
@@ -15,6 +25,12 @@ public class PlayerStats : MonoBehaviour
         health = maxHealth;
         currency = 0;
         isAlive = true;
+        canJump = true;
+        jumpCooldown = 5;
+        invincible = false;
+        isJumping = false;
+        invincibilityTime = 0.5f;
+        jumpIFrames = 0.5f;
     }
 
     // Update is called once per frame
@@ -73,5 +89,6 @@ public class PlayerStats : MonoBehaviour
         health = maxHealth;
         currency = 0;
         isAlive = true;
+        canJump = true;
     }
 }

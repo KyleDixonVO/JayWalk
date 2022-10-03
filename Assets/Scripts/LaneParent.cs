@@ -11,8 +11,11 @@ public class LaneParent : MonoBehaviour
     public GameObject ObstaclePrefab;
     public GameObject CurrencyPrefab;
     public GameObject HealthUpPrefab;
-    public float minObstacleSpacing = 10.0f;
+    public GameObject finishLine;
+    public float minObstacleSpacing = 8.0f;
     public float maxObstacleSpacing = 20.0f;
+    public int rngMax = 20;
+    public int rngMin = 0;
     private float _levelLength = 1000;
     public float levelLength;
     public float generationDistance;
@@ -20,8 +23,12 @@ public class LaneParent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        finishLine = GameObject.Find("FinishLine");
+        finishLine.transform.position = new Vector2(0, _levelLength);
+
         levelLength = _levelLength;
         lane = new GameObject[numberOfLanes];
+
         obstacleLists = new GameObject[lane.Length,1000];
         for (int i = 0; i < 5; i++)
         {
@@ -39,6 +46,8 @@ public class LaneParent : MonoBehaviour
 
     void PopulateLanes()
     {
+        // Generates obstacles, healthUps, and currency based on lane length
+
         for (int i = 0; i < lane.Length; i++)
         {
             generationDistance = 0;
@@ -47,24 +56,34 @@ public class LaneParent : MonoBehaviour
                 {
                     while (generationDistance < _levelLength)
                     {
-                        //obstacleLists[i,j] = new GameObject();
-                        int nextObject = UnityEngine.Random.Range(0, 20);
+                        // uses rng to randomise each spawned object
+
+                        int nextObject = UnityEngine.Random.Range(rngMin, rngMax);
                         generationDistance += UnityEngine.Random.Range(minObstacleSpacing, maxObstacleSpacing);
 
-                        if (nextObject >= 19)
+                        
+                        if (nextObject >= rngMax - 1)
                         {
+                            // spawn a new healthUp
+
                             GameObject temp = Instantiate(HealthUpPrefab, lane[i].transform);
                             temp.transform.position = new Vector2(lane[i].transform.position.x, generationDistance);
                             obstacleLists[i, j] = temp;
                         }
-                        else if (nextObject > 10)
+                        else if (nextObject > rngMax - 5)
                         {
+                            // spawn a new currency item
+
                             GameObject temp = Instantiate(CurrencyPrefab, lane[i].transform);
                             temp.transform.position = new Vector2(lane[i].transform.position.x, generationDistance);
                             obstacleLists[i, j] = temp;
                         }
                         else
                         {
+                            // spawn a new obstacle
+
+                            // later game versions will probably need a fourth option to determine whether an obstacle should be of the jumpable variety or not
+
                             GameObject temp = Instantiate(ObstaclePrefab, lane[i].transform);
                             temp.transform.position = new Vector2(lane[i].transform.position.x, generationDistance);
                             obstacleLists[i, j] = temp;
@@ -79,6 +98,9 @@ public class LaneParent : MonoBehaviour
 
     public void Reset()
     {
+
+        // Destroys all existing lane objects and then repopulates the lanes
+
         for (int i = 0; i < lane.Length; i++)
         {
             for (int j = 0; j < lane[i].transform.childCount; j++)
