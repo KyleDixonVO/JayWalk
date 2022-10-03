@@ -10,8 +10,12 @@ public class PlayerMovement : MonoBehaviour
     float maxSpeed = 15.0f;
     float acceleration = 0.01f;
     public float currentSpeed;
+    public float elapsedTime = 0;
+    public float elapsedJumpIFrameTime;
     int lane;
     private bool runningIFrames;
+    private bool runningJumpCooldown;
+    private bool runningJumpIFrames;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
         LaneParent = GameObject.Find("LaneParent");
         playerStats = GameObject.Find("Player").GetComponent<PlayerStats>();
         soundManager = GameObject.Find("SoundManager").GetComponent<SoundManager>();
+        elapsedTime = playerStats.jumpCooldown;
     }
 
     // Update is called once per frame
@@ -59,12 +64,13 @@ public class PlayerMovement : MonoBehaviour
             if (playerStats.canJump)
             {
                 playerStats.canJump = false;
-                Debug.Log("Jump Started");
-                StartCoroutine(JumpCooldown(playerStats.jumpCooldown));
-                StartCoroutine(JumpingIFrames(playerStats.jumpIFrames));
-                Debug.Log("Jump Finished");
+                runningJumpCooldown = true;
+                runningJumpIFrames = true;
             }
         }
+
+        JumpCooldown(playerStats.jumpCooldown);
+        JumpingIFrames(playerStats.jumpIFrames);
 
         if (this.gameObject.GetComponent<Rigidbody2D>().velocity.y > maxSpeed)
         {
@@ -89,15 +95,15 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            if (!runningIFrames)
-            {
-                StartCoroutine(IFrames(playerStats.invincibilityTime));
-            }
-
             if (!playerStats.invincible)
             {
                 playerStats.TakeDamage(1);
                 soundManager.PlayDamageAudio();
+            }
+
+            if (!runningIFrames)
+            {
+                StartCoroutine(IFrames(playerStats.invincibilityTime));
             }
 
             this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1);
@@ -124,17 +130,24 @@ public class PlayerMovement : MonoBehaviour
         this.gameObject.transform.position = new Vector2(LaneParent.transform.GetChild(lane).transform.position.x, 0);
     }
 
-    IEnumerator JumpCooldown(float timer)
+    public void JumpCooldown(float timer)
     {
-        Debug.Log("Jump Cooldown Starting");
-        float normalizedTime = 0f;
-        while(normalizedTime <= 1f)
+        if (!runningJumpCooldown)
         {
-            normalizedTime += Time.deltaTime/timer;
-            Debug.Log(normalizedTime);
-            yield return null;
+            elapsedTime = 0f;
         }
-        playerStats.canJump = true;
+        else if (!playerStats.canJump)
+        {
+            elapsedTime += Time.deltaTime / timer;
+            Debug.Log(elapsedTime);
+        }
+        if (elapsedTime >= 1)
+        {
+            playerStats.canJump = true;
+            runningJumpCooldown = false;
+
+        }
+
     }
 
     IEnumerator IFrames(float timer)
@@ -146,23 +159,31 @@ public class PlayerMovement : MonoBehaviour
         while(normalizedTime <= 1f)
         {
             normalizedTime += Time.deltaTime / timer;
-            Debug.Log(normalizedTime);
+            //Debug.Log(normalizedTime);
             yield return null;
         }
         playerStats.invincible = false;
         runningIFrames = false;
     }
 
-    IEnumerator JumpingIFrames(float timer)
+    public void JumpingIFrames(float timer)
     {
-        playerStats.isJumping = true;
-        float normalizedTime = 0f;
-        while (normalizedTime <= 1f)
+        if (!runningJumpIFrames)
         {
-            normalizedTime += Time.deltaTime / timer;
-            Debug.Log(normalizedTime);
-            yield return null;
+            elapsedJumpIFrameTime = 0f;
         }
-        playerStats.isJumping = false;
+        else if (elapsedJumpIFrameTime < 1)
+        {
+            playerStats.isJumping = true;
+            runningJumpIFrames = true;
+            elapsedJumpIFrameTime += Time.deltaTime / timer;
+            //Debug.Log(elapsedJumpIFrameTime);
+        }
+
+        if(elapsedJumpIFrameTime >= 1)
+        {
+            playerStats.isJumping = false;
+            runningJumpIFrames = false;
+        }
     }
 }

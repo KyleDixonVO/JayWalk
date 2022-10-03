@@ -26,7 +26,7 @@ public class PlayerStats : MonoBehaviour
         currency = 0;
         isAlive = true;
         canJump = true;
-        jumpCooldown = 5;
+        jumpCooldown = 3.0f;
         invincible = false;
         isJumping = false;
         invincibilityTime = 0.5f;

@@ -684,7 +684,7 @@ GameObject:
   - component: {fileID: 330807597}
   - component: {fileID: 330807596}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: JumpFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1411,8 +1411,10 @@ MonoBehaviour:
   CurrencyText: {fileID: 0}
   HealthText: {fileID: 0}
   CompletionText: {fileID: 0}
+  jumpText: {fileID: 0}
   healthSlider: {fileID: 0}
   completionSlider: {fileID: 0}
+  jumpSlider: {fileID: 0}
   HealthFraction: 0
 --- !u!4 &809528110
 Transform:
@@ -1680,7 +1682,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.47748208, g: 1, b: 0, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -1694,8 +1696,8 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 92856568}
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 330807596}
   m_FillRect: {fileID: 330807595}
   m_HandleRect: {fileID: 92856567}
   m_Direction: 0
