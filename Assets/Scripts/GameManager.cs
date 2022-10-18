@@ -6,14 +6,23 @@ public class GameManager : MonoBehaviour
 {
     private bool gameplayActive;
     //SoundManager soundManager = new SoundManager();
-    LaneParent laneParent;
-    GameObject player;
+    public static GameManager gameManager;
 
+    void Awake()
+    {
+        if (gameManager == null)
+        {
+            gameManager = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (gameManager != this)
+        {
+            Destroy(gameObject);
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
-        laneParent = GameObject.Find("LaneParent").GetComponent<LaneParent>();
-        player = GameObject.Find("Player");
         gameplayActive = true;
     }
 
@@ -24,9 +33,9 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                laneParent.Reset();
-                player.GetComponent<PlayerStats>().Reset();
-                player.GetComponent<PlayerMovement>().Reset();
+                LaneParent.laneParent.Reset();
+                PlayerStats.playerStats.Reset();
+                PlayerMovement.playerMovement.Reset();
             }
         }
     }

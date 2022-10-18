@@ -19,7 +19,20 @@ public class LaneParent : MonoBehaviour
     private float _levelLength = 1000;
     public float levelLength;
     public float generationDistance;
+    public static LaneParent laneParent;
 
+    void Awake()
+    {
+        if (laneParent == null)
+        {
+            laneParent = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (laneParent != this)
+        {
+            Destroy(gameObject);
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {

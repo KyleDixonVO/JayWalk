@@ -18,7 +18,20 @@ public class PlayerStats : MonoBehaviour
     public bool isJumping;
     public bool invincible;
 
+    public static PlayerStats playerStats;
 
+    void Awake()
+    {
+        if (playerStats == null)
+        {
+            playerStats = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (playerStats != this)
+        {
+            Destroy(gameObject);
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {

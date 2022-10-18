@@ -7,7 +7,20 @@ public class SoundManager : MonoBehaviour
     public AudioSource moneyAudio;
     public AudioSource damageAudio;
     public AudioSource healAudio;
+    public static SoundManager soundManager;
 
+    void Awake()
+    {
+        if (soundManager == null)
+        {
+            soundManager = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (soundManager != this)
+        {
+            Destroy(gameObject);
+        }
+    }
 
 
     // Start is called before the first frame update

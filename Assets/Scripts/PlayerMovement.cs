@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    GameObject LaneParent;
-    PlayerStats playerStats;
-    SoundManager soundManager;
     float maxSpeed = 15.0f;
     float acceleration = 0.01f;
     public float currentSpeed;
@@ -16,22 +13,34 @@ public class PlayerMovement : MonoBehaviour
     private bool runningIFrames;
     private bool runningJumpCooldown;
     private bool runningJumpIFrames;
+    public static PlayerMovement playerMovement;
+
+    void Awake()
+    {
+        if (playerMovement == null)
+        {
+            playerMovement = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (playerMovement != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         // starts player in middle lane
         lane = 2;
-        LaneParent = GameObject.Find("LaneParent");
-        playerStats = GameObject.Find("Player").GetComponent<PlayerStats>();
-        soundManager = GameObject.Find("SoundManager").GetComponent<SoundManager>();
-        elapsedTime = playerStats.jumpCooldown;
+        elapsedTime = PlayerStats.playerStats.jumpCooldown;
     }
 
     // Update is called once per frame
     void Update()
     {
         // Stops the player from moving if they are dead or if they are at the end of a level
-        if (this.gameObject.transform.position.y >= LaneParent.GetComponent<LaneParent>().levelLength || !playerStats.isAlive)
+        if (this.gameObject.transform.position.y >= LaneParent.laneParent.levelLength || !PlayerStats.playerStats.isAlive)
         {
             this.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             return;
@@ -61,16 +70,16 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (playerStats.canJump)
+            if (PlayerStats.playerStats.canJump)
             {
-                playerStats.canJump = false;
+                PlayerStats.playerStats.canJump = false;
                 runningJumpCooldown = true;
                 runningJumpIFrames = true;
             }
         }
 
-        JumpCooldown(playerStats.jumpCooldown);
-        JumpingIFrames(playerStats.jumpIFrames);
+        JumpCooldown(PlayerStats.playerStats.jumpCooldown);
+        JumpingIFrames(PlayerStats.playerStats.jumpIFrames);
 
         if (this.gameObject.GetComponent<Rigidbody2D>().velocity.y > maxSpeed)
         {
@@ -83,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
 
         currentSpeed = this.gameObject.GetComponent<Rigidbody2D>().velocity.y;
 
-        this.gameObject.transform.position = new Vector2(LaneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
+        this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
 
         
 
@@ -91,19 +100,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (playerStats.isJumping) return;
+        if (PlayerStats.playerStats.isJumping) return;
 
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            if (!playerStats.invincible)
+            if (!PlayerStats.playerStats.invincible)
             {
-                playerStats.TakeDamage(1);
-                soundManager.PlayDamageAudio();
+                PlayerStats.playerStats.TakeDamage(1);
+                SoundManager.soundManager.PlayDamageAudio();
             }
 
             if (!runningIFrames)
             {
-                StartCoroutine(IFrames(playerStats.invincibilityTime));
+                StartCoroutine(IFrames(PlayerStats.playerStats.invincibilityTime));
             }
 
             this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1);
@@ -111,14 +120,14 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("HealthUp"))
         {
-            playerStats.Heal(1);
-            soundManager.PlayHealAudio();
+            PlayerStats.playerStats.Heal(1);
+            SoundManager.soundManager.PlayHealAudio();
             collision.gameObject.SetActive(false);
         }
         else if (collision.gameObject.CompareTag("Currency"))
         {
-            playerStats.IncreaseMoney(1);
-            soundManager.PlayMoneyAudio();
+            PlayerStats.playerStats.IncreaseMoney(1);
+            SoundManager.soundManager.PlayMoneyAudio();
             collision.gameObject.SetActive(false);
         }
     }
@@ -127,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
     {
         this.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         lane = 2;
-        this.gameObject.transform.position = new Vector2(LaneParent.transform.GetChild(lane).transform.position.x, 0);
+        this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, 0);
     }
 
     public void JumpCooldown(float timer)
@@ -136,14 +145,14 @@ public class PlayerMovement : MonoBehaviour
         {
             elapsedTime = 0f;
         }
-        else if (!playerStats.canJump)
+        else if (!PlayerStats.playerStats.canJump)
         {
             elapsedTime += Time.deltaTime / timer;
             Debug.Log(elapsedTime);
         }
         if (elapsedTime >= 1)
         {
-            playerStats.canJump = true;
+            PlayerStats.playerStats.canJump = true;
             runningJumpCooldown = false;
 
         }
@@ -153,7 +162,7 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator IFrames(float timer)
     {
         runningIFrames = true;
-        playerStats.invincible = true;
+        PlayerStats.playerStats.invincible = true;
         Debug.Log("I-Frames Starting");
         float normalizedTime = 0f;
         while(normalizedTime <= 1f)
@@ -162,7 +171,7 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log(normalizedTime);
             yield return null;
         }
-        playerStats.invincible = false;
+        PlayerStats.playerStats.invincible = false;
         runningIFrames = false;
     }
 
@@ -174,7 +183,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (elapsedJumpIFrameTime < 1)
         {
-            playerStats.isJumping = true;
+            PlayerStats.playerStats.isJumping = true;
             runningJumpIFrames = true;
             elapsedJumpIFrameTime += Time.deltaTime / timer;
             //Debug.Log(elapsedJumpIFrameTime);
@@ -182,7 +191,7 @@ public class PlayerMovement : MonoBehaviour
 
         if(elapsedJumpIFrameTime >= 1)
         {
-            playerStats.isJumping = false;
+            PlayerStats.playerStats.isJumping = false;
             runningJumpIFrames = false;
         }
     }
