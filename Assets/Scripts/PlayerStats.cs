@@ -7,10 +7,18 @@ public class PlayerStats : MonoBehaviour
     public int maxHealth = 3;
     public int health;
     public int currency;
+    public int totalCurrency;
     public float invincibilityTime;
     public float laneSwapSpeed;
     public float jumpCooldown;
     public float jumpIFrames;
+    public float currencyMultiplier;
+    public float glideTime;
+
+    public bool LevelOneComplete;
+    public bool LevelTwoComplete;
+    public bool LevelThreeComplete;
+    public bool FirstRun;
 
     public bool isAlive;
     public bool wingsEnabled;
