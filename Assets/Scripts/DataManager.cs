@@ -9,6 +9,8 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager dataManager;
 
+    public float volume;
+
     void Awake()
     {
        if (dataManager == null)
@@ -31,6 +33,33 @@ public class DataManager : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public void SaveGlobalData()
+    {
+        BinaryFormatter binaryFormatter = new BinaryFormatter();
+        FileStream globalFile = File.Create(Application.persistentDataPath + "/globalData.dat");
+
+        GlobalData globalData = new GlobalData();
+        globalData.volume = volume;
+
+
+        binaryFormatter.Serialize(globalFile, globalData);
+        globalFile.Close();
+    }
+
+    public void LoadGlobalData()
+    {
+        if (File.Exists(Application.persistentDataPath + "/playerData.dat"))
+        {
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            FileStream globalFile = File.Open(Application.persistentDataPath + "/globalData.dat", FileMode.Open);
+            GlobalData globalData = (GlobalData)binaryFormatter.Deserialize(globalFile);
+            globalFile.Close();
+
+            globalData.volume = volume;
+
+        }
     }
 
     public void ResetPlayerData()
@@ -160,5 +189,13 @@ public class DataManager : MonoBehaviour
         public int currentGlideTier;
         public int currentWingEnabledTier;
     }
+
+    [Serializable]
+
+    public class GlobalData 
+    {
+        public float volume;
+    }
+
 
 }

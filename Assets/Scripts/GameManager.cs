@@ -9,9 +9,11 @@ public class GameManager : MonoBehaviour
     public bool escapePressed = false;
     public bool gameWon = false;
     public bool gameLoss = false;
+    public int sceneIndex;
 
     //SoundManager soundManager = new SoundManager();
     public static GameManager gameManager;
+    private Scene scene;
 
     void Awake()
     {
@@ -28,6 +30,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        DataManager.dataManager.LoadGlobalData();
         DataManager.dataManager.LoadPlayerData();
         
     }
@@ -42,11 +45,15 @@ public class GameManager : MonoBehaviour
             escapePressed = !escapePressed;
         }
 
+        scene = SceneManager.GetActiveScene();
+        sceneIndex = scene.buildIndex;
+
     }
 
     public void SwitchToGamePlay()
     {
         SceneManager.LoadScene(1);
+        UI_Manager.ui_manager.SwitchGameplay();
         gameplayActive = true;
     }
 
@@ -54,6 +61,7 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(0);
         gameplayActive = false;
+        UI_Manager.ui_manager.SwitchMainMenu();
     }
 
     public void QuitGame()

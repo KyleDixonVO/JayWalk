@@ -65,6 +65,7 @@ public class UI_Manager : MonoBehaviour
         healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
         completionSlider = GameObject.Find("CompletionSlider").GetComponent<Slider>();
         jumpSlider = GameObject.Find("JumpSlider").GetComponent<Slider>();
+        state = UI_State.mainMenu;
     }
 
     // Update is called once per frame
@@ -101,6 +102,8 @@ public class UI_Manager : MonoBehaviour
 
     public void GameplayUpdate()
     {
+        if (PlayerMovement.playerMovement == null || PlayerStats.playerStats == null || LaneParent.laneParent == null) return;
+
         CurrencyText.text = "Scum Coin: " + PlayerStats.playerStats.currency;
         HealthText.text = "Health: " + PlayerStats.playerStats.health + "/" + PlayerStats.playerStats.maxHealth;
         CompletionText.text = "Level Progress: ";
@@ -128,29 +131,36 @@ public class UI_Manager : MonoBehaviour
         {
             case UI_State.mainMenu:
                 MainMenu();
+                Time.timeScale = 0;
                 break;
 
             case UI_State.gameplay:
                 Gameplay();
+                Time.timeScale = 1;
                 break;
 
             case UI_State.paused:
+                Time.timeScale = 0;
                 Pause();
                 break;
 
             case UI_State.options:
+                Time.timeScale = 0;
                 Options();
                 break;
 
             case UI_State.win:
+                Time.timeScale = 0;
                 Win();
                 break;
 
             case UI_State.upgrade:
+                Time.timeScale = 0;
                 Upgrade();
                 break;
 
             case UI_State.gameOver:
+                Time.timeScale = 0;
                 Gameover();
                 break;
         }
@@ -170,9 +180,17 @@ public class UI_Manager : MonoBehaviour
     public void SwitchMainMenu()
     {
         state = UI_State.mainMenu;
-        PlayerMovement.playerMovement.Reset();
-        PlayerStats.playerStats.Reset();
-        LaneParent.laneParent.Reset();
+    }
+
+    public void SwitchOptions()
+    {
+        returnFromOptions = state;
+        state = UI_State.options;
+    }
+
+    public void SwitchGameplay()
+    {
+        state = UI_State.gameplay;
     }
 
     public void MainMenu()
@@ -201,6 +219,7 @@ public class UI_Manager : MonoBehaviour
     {
         pauseCanvas.enabled = true;
         gameplayCanvas.enabled = true;
+        optionsCanvas.enabled = false;
     }
 
     public void Options()
