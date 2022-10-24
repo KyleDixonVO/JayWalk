@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     private bool gameplayActive;
+    public bool escapePressed = false;
+    public bool gameWon = false;
+    public bool gameLoss = false;
 
     //SoundManager soundManager = new SoundManager();
     public static GameManager gameManager;
@@ -33,6 +36,12 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         DevDebugInputs();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            escapePressed = !escapePressed;
+        }
+
     }
 
     public void SwitchToGamePlay()

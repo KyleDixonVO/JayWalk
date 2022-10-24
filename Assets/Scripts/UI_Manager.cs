@@ -39,6 +39,8 @@ public class UI_Manager : MonoBehaviour
     }
 
     public UI_State state;
+    public UI_State returnFromPause;
+    public UI_State returnFromOptions;
 
 
     void Awake()
@@ -68,8 +70,33 @@ public class UI_Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (state == UI_State.gameplay)
+        {
+            GameplayUpdate();
+        }
+
+        if (state == UI_State.gameplay && GameManager.gameManager.gameLoss == true)
+        {
+            state = UI_State.gameOver;
+        }
+
+        if (state == UI_State.gameplay && GameManager.gameManager.gameWon == true)
+        {
+            state = UI_State.win;
+        }
+
+        if (state == UI_State.gameplay && GameManager.gameManager.escapePressed)
+        {
+            returnFromPause = state;
+            state = UI_State.paused;
+        }
+        else if (state == UI_State.paused && !GameManager.gameManager.escapePressed)
+        {
+            state = returnFromPause;
+        }
+
         EvaluateSwitch();
-        
     }
 
     public void GameplayUpdate()
@@ -100,26 +127,123 @@ public class UI_Manager : MonoBehaviour
         switch (state) 
         {
             case UI_State.mainMenu:
+                MainMenu();
                 break;
 
             case UI_State.gameplay:
+                Gameplay();
                 break;
 
             case UI_State.paused:
+                Pause();
                 break;
 
             case UI_State.options:
+                Options();
                 break;
 
             case UI_State.win:
+                Win();
                 break;
 
             case UI_State.upgrade:
+                Upgrade();
                 break;
 
             case UI_State.gameOver:
+                Gameover();
                 break;
         }
 
+    }
+
+    public void ReturnFromOptions()
+    {
+        state = returnFromOptions;
+    }
+
+    public void ReturnFromPause()
+    {
+        GameManager.gameManager.escapePressed = false;
+    }
+
+    public void SwitchMainMenu()
+    {
+        state = UI_State.mainMenu;
+        PlayerMovement.playerMovement.Reset();
+        PlayerStats.playerStats.Reset();
+        LaneParent.laneParent.Reset();
+    }
+
+    public void MainMenu()
+    {
+        mainMenuCanvas.enabled = true;
+        gameplayCanvas.enabled = false;
+        pauseCanvas.enabled = false;
+        optionsCanvas.enabled = false;
+        winCanvas.enabled = false;
+        upgradeCanvas.enabled = false;
+        gameOverCanvas.enabled = false;
+    }
+
+    public void Gameplay()
+    {
+        mainMenuCanvas.enabled = false;
+        gameplayCanvas.enabled = true;
+        pauseCanvas.enabled = false;
+        optionsCanvas.enabled = false;
+        winCanvas.enabled = false;
+        upgradeCanvas.enabled = false;
+        gameOverCanvas.enabled = false;
+    }
+
+    public void Pause()
+    {
+        pauseCanvas.enabled = true;
+        gameplayCanvas.enabled = true;
+    }
+
+    public void Options()
+    {
+        mainMenuCanvas.enabled = false;
+        gameplayCanvas.enabled = false;
+        pauseCanvas.enabled = false;
+        optionsCanvas.enabled = true;
+        winCanvas.enabled = false;
+        upgradeCanvas.enabled = false;
+        gameOverCanvas.enabled = false;
+    }
+
+    public void Win()
+    {
+        mainMenuCanvas.enabled = false;
+        gameplayCanvas.enabled = false;
+        pauseCanvas.enabled = false;
+        optionsCanvas.enabled = false;
+        winCanvas.enabled = true;
+        upgradeCanvas.enabled = false;
+        gameOverCanvas.enabled = false;
+    }
+
+    public void Gameover()
+    {
+        mainMenuCanvas.enabled = false;
+        gameplayCanvas.enabled = false;
+        pauseCanvas.enabled = false;
+        optionsCanvas.enabled = false;
+        winCanvas.enabled = false;
+        upgradeCanvas.enabled = false;
+        gameOverCanvas.enabled = true;
+    }
+
+    public void Upgrade()
+    {
+        mainMenuCanvas.enabled = false;
+        gameplayCanvas.enabled = false;
+        pauseCanvas.enabled = false;
+        optionsCanvas.enabled = false;
+        winCanvas.enabled = false;
+        upgradeCanvas.enabled = true;
+        gameOverCanvas.enabled = false;
     }
 }
