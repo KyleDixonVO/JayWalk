@@ -79,6 +79,22 @@ public class GameManager : MonoBehaviour
                 PlayerStats.playerStats.Reset();
                 PlayerMovement.playerMovement.Reset();
             }
+
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                DataManager.dataManager.LoadPlayerData();
+            }
+
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                DataManager.dataManager.SavePlayerData();
+            }
+
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                PlayerStats.playerStats.health++;
+                PlayerStats.playerStats.currency++;
+            }
         }
     }
 }

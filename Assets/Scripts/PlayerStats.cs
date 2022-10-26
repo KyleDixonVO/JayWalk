@@ -43,15 +43,11 @@ public class PlayerStats : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        health = maxHealth;
-        currency = 0;
+
         isAlive = true;
         canJump = true;
-        jumpCooldown = 3.0f;
         invincible = false;
         isJumping = false;
-        invincibilityTime = 0.5f;
-        jumpIFrames = 0.5f;
     }
 
     // Update is called once per frame
