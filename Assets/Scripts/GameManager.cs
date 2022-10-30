@@ -33,7 +33,6 @@ public class GameManager : MonoBehaviour
     {
         DataManager.dataManager.LoadGlobalData();
         DataManager.dataManager.LoadPlayerData();
-        
     }
 
     // Update is called once per frame
@@ -52,6 +51,7 @@ public class GameManager : MonoBehaviour
         if (!PlayerStats.playerStats.isAlive)
         {
             gameLoss = true;
+
         }
 
         if (PlayerMovement.playerMovement == null) return;
@@ -60,16 +60,32 @@ public class GameManager : MonoBehaviour
             wonLevel = true;
         }
 
+        if((gameLoss == true || wonLevel == true) && PlayerStats.playerStats.CurrencyTotaled == false)
+        {
+            PlayerStats.playerStats.UpdateTotalCurrency();
+        }
+
     }
 
     public void ResetRun()
     {
         PlayerStats.playerStats.Reset();
-        PlayerMovement.playerMovement.Reset();
-        LaneParent.laneParent.Reset();
+
+
         gameLoss = false;
         gameWon = false;
         wonLevel = false;
+
+        if (LaneParent.laneParent != null) 
+        {
+            LaneParent.laneParent.Reset();
+        }
+
+        if (PlayerMovement.playerMovement != null)
+        {
+            //PlayerMovement.playerMovement.Reset();
+        }
+ 
     }
 
     public void SwitchToGamePlay()
@@ -77,6 +93,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(1);
         UI_Manager.ui_manager.SwitchGameplay();
         gameplayActive = true;
+        ResetRun();
     }
 
     public void SwitchToMainMenu()

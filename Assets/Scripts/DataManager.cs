@@ -9,7 +9,8 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager dataManager;
 
-    public float volume;
+    public float musicVolume;
+    public float FXVolume;
 
     void Awake()
     {
@@ -41,7 +42,9 @@ public class DataManager : MonoBehaviour
         FileStream globalFile = File.Create(Application.persistentDataPath + "/globalData.dat");
 
         GlobalData globalData = new GlobalData();
-        globalData.volume = volume;
+        globalData.musicVolume = musicVolume;
+        globalData.FXVolume = FXVolume;
+        Debug.Log(musicVolume + "  " + FXVolume);
 
 
         binaryFormatter.Serialize(globalFile, globalData);
@@ -57,7 +60,10 @@ public class DataManager : MonoBehaviour
             GlobalData globalData = (GlobalData)binaryFormatter.Deserialize(globalFile);
             globalFile.Close();
 
-            globalData.volume = volume;
+            musicVolume = globalData.musicVolume;
+            FXVolume = globalData.FXVolume;
+
+            Debug.Log(musicVolume + "  " + FXVolume);
 
         }
     }
@@ -67,6 +73,7 @@ public class DataManager : MonoBehaviour
         PlayerStats.playerStats.maxHealth = 3;
         PlayerStats.playerStats.health = 3;
         PlayerStats.playerStats.currency = 0;
+        PlayerStats.playerStats.totalCurrency = 0;
         PlayerStats.playerStats.invincibilityTime = 0.5f;
         PlayerStats.playerStats.laneSwapSpeed = 1.0f;
         PlayerStats.playerStats.jumpCooldown = 3.0f;
@@ -86,6 +93,8 @@ public class DataManager : MonoBehaviour
         UpgradeManager.upgradeManager.currentMultiplierTier = 0;
         UpgradeManager.upgradeManager.currentSwapTier = 0;
         UpgradeManager.upgradeManager.currentWingEnabledTier = 0;
+
+        SavePlayerData();
     }
 
     public void SavePlayerData()
@@ -194,7 +203,8 @@ public class DataManager : MonoBehaviour
 
     public class GlobalData 
     {
-        public float volume;
+        public float musicVolume;
+        public float FXVolume;
     }
 
 

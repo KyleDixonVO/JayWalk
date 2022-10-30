@@ -30,6 +30,8 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         finalLevelComplete = false;
+        activeLevel = 1;
+        LoadLevel();
     }
 
     // Update is called once per frame

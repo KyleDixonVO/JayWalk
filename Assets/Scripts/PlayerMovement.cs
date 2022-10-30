@@ -9,11 +9,14 @@ public class PlayerMovement : MonoBehaviour
     public float currentSpeed;
     public float elapsedTime = 0;
     public float elapsedJumpIFrameTime;
+    public float elapsedGlideTime;
     int lane;
     public bool atEndOfLevel;
     private bool runningIFrames;
     private bool runningJumpCooldown;
     private bool runningJumpIFrames;
+    private bool runningGlideIFrames;
+    private bool gliding;
     public float laneSwapTimer;
     public Vector2 Endpoint;
     public Vector2 GameObjectPosition;
@@ -53,6 +56,21 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
+        if (this.gameObject.GetComponent<Rigidbody2D>().velocity.y > maxSpeed)
+        {
+            this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1 * maxSpeed);
+        }
+        else
+        {
+            this.gameObject.GetComponent<Rigidbody2D>().velocity += Vector2.up * acceleration;
+        }
+
+        currentSpeed = this.gameObject.GetComponent<Rigidbody2D>().velocity.y;
+
+        Endpoint = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
+        this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
+        //this.gameObject.transform.position = Vector2.MoveTowards(transform.position, Endpoint, PlayerStats.playerStats.laneSwapSpeed * Time.deltaTime);
+
         // accelerate until player hits max speed -- slow on collision with obstacle
         // check left/right input -- change lane based on input. Input does not loop around pac-man style
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
@@ -87,28 +105,21 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        //if (Input.GetKey(KeyCode.Space))
+        //{
+        //    if (PlayerStats.playerStats.isJumping)
+        //    {
+        //        GlideIFrames();
+        //    }
+        //}
+
         JumpCooldown(PlayerStats.playerStats.jumpCooldown);
         JumpingIFrames(PlayerStats.playerStats.jumpIFrames);
-
-        if (this.gameObject.GetComponent<Rigidbody2D>().velocity.y > maxSpeed)
-        {
-            this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0,  1 * maxSpeed);
-        }
-        else
-        {
-            this.gameObject.GetComponent<Rigidbody2D>().velocity += Vector2.up * acceleration; 
-        }
-
-        currentSpeed = this.gameObject.GetComponent<Rigidbody2D>().velocity.y;
-
-        Endpoint = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
-        this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
-        //this.gameObject.transform.position = Vector2.MoveTowards(transform.position, Endpoint, PlayerStats.playerStats.laneSwapSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (PlayerStats.playerStats.isJumping) return;
+        if (PlayerStats.playerStats.isJumping || gliding) return;
 
         if (collision.gameObject.CompareTag("Obstacle"))
         {
@@ -195,14 +206,34 @@ public class PlayerMovement : MonoBehaviour
         {
             PlayerStats.playerStats.isJumping = true;
             runningJumpIFrames = true;
-            elapsedJumpIFrameTime += Time.deltaTime / timer;
-            //Debug.Log(elapsedJumpIFrameTime);
+            elapsedJumpIFrameTime += Time.deltaTime;
+            Debug.Log(elapsedJumpIFrameTime);
         }
 
-        if(elapsedJumpIFrameTime >= 1)
+        if (gliding) return;
+        if(elapsedJumpIFrameTime >= timer)
         {
             PlayerStats.playerStats.isJumping = false;
             runningJumpIFrames = false;
+        }
+    }
+
+    public void GlideIFrames()
+    {
+        if (PlayerStats.playerStats.wingsEnabled == false) return;
+        if (!gliding)
+        {
+            elapsedGlideTime = 0f;
+        }
+        else if (elapsedGlideTime < PlayerStats.playerStats.glideTime)
+        {
+            gliding = true;
+            elapsedGlideTime += Time.deltaTime / PlayerStats.playerStats.glideTime;
+        }
+
+        if (elapsedJumpIFrameTime >= 1)
+        {
+            gliding = false;
         }
     }
 }

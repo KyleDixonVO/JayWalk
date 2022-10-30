@@ -14,8 +14,8 @@ public class SoundManager : MonoBehaviour
     public AudioSource menuSelectionAudio;
     public AudioSource mainMenuMusic;
     public AudioSource gameplayMusic;
-    public float musicSliderValue;
-    public float soundEffectsValue;
+    public AudioSource insufficientFundsAudio;
+    public AudioSource purchaseAudio;
     public static SoundManager soundManager;
 
     void Awake()
@@ -35,23 +35,30 @@ public class SoundManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        DataManager.dataManager.LoadGlobalData();
+        UI_Manager.ui_manager.MusicVolumeSlider.value = DataManager.dataManager.musicVolume;
+        UI_Manager.ui_manager.FXVolumeSlider.value = DataManager.dataManager.FXVolume;
+        Debug.Log(DataManager.dataManager.FXVolume + "  " + UI_Manager.ui_manager.FXVolumeSlider.value);
+
         moneyAudio.playOnAwake = false;
         damageAudio.playOnAwake = false;
         healAudio.playOnAwake = false;
         mainMenuMusic.playOnAwake = false;
-        gameplayMusic.playOnAwake = false;
+        //gameplayMusic.playOnAwake = false;
+        //insufficientFundsAudio.playOnAwake = false;
+        //purchaseAudio.playOnAwake = false;
 
-        moneyAudio.volume = soundEffectsValue;
-        damageAudio.volume = soundEffectsValue;
-        healAudio.volume = soundEffectsValue;
-        mainMenuMusic.volume = musicSliderValue;
-        gameplayMusic.volume = musicSliderValue;
+        UpdateSoundValues();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (UI_Manager.ui_manager.state != UI_Manager.UI_State.options) return;
+        DataManager.dataManager.musicVolume = UI_Manager.ui_manager.MusicVolumeSlider.value;
+        DataManager.dataManager.FXVolume = UI_Manager.ui_manager.FXVolumeSlider.value;
         
+        UpdateSoundValues();
     }
 
     public void PlayHealAudio()
@@ -82,5 +89,28 @@ public class SoundManager : MonoBehaviour
     {
         if (gameplayMusic.isPlaying) return;
         gameplayMusic.Play();
+    }
+
+    public void PlayInsufficientFundsAudio()
+    {
+        if (insufficientFundsAudio.isPlaying) return;
+        insufficientFundsAudio.Play();
+    }
+
+    public void PlayPurchaseAudio()
+    {
+        if (purchaseAudio.isPlaying) return;
+        purchaseAudio.Play();
+    }
+
+    public void UpdateSoundValues()
+    {
+        moneyAudio.volume = DataManager.dataManager.FXVolume;
+        damageAudio.volume = DataManager.dataManager.FXVolume;
+        healAudio.volume = DataManager.dataManager.FXVolume;
+        mainMenuMusic.volume = DataManager.dataManager.musicVolume;
+        //gameplayMusic.volume = musicSliderValue;
+        //insufficientFundsAudio.volume = soundEffectsValue;
+        //purchaseAudio.volume = soundEffectsValue;
     }
 }

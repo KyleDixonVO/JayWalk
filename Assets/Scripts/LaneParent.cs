@@ -9,6 +9,7 @@ public class LaneParent : MonoBehaviour
     public GameObject[] lane;
     public GameObject[,]obstacleLists;
     public GameObject ObstaclePrefab;
+    public GameObject TallObstaclePrefab;
     public GameObject CurrencyPrefab;
     public GameObject HealthUpPrefab;
     public GameObject finishLine;
@@ -16,8 +17,15 @@ public class LaneParent : MonoBehaviour
     public float maxObstacleSpacing = 20.0f;
     public int rngMax = 20;
     public int rngMin = 0;
-    private float _levelLength = 1000;
-    public float levelLength;
+    private float _levelLength;
+    private float defaultLength = 1000;
+    private float defaultMinObstacleSpacing = 8.0f;
+    private float defaultMaxObstacleSpacing = 20.0f;
+    private int defaultRngMax = 20;
+    public float levelLength
+    {
+        get { return _levelLength; }
+    }
     public float generationDistance;
     public static LaneParent laneParent;
 
@@ -36,10 +44,10 @@ public class LaneParent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        UpdateGenerationPerameters();
         finishLine = GameObject.Find("FinishLine");
         finishLine.transform.position = new Vector2(0, _levelLength);
 
-        levelLength = _levelLength;
         lane = new GameObject[numberOfLanes];
 
         obstacleLists = new GameObject[lane.Length,1000];
@@ -109,6 +117,34 @@ public class LaneParent : MonoBehaviour
         }
     }
 
+    public void UpdateGenerationPerameters()
+    {
+        switch (LevelManager.levelManager.activeLevel)
+        {
+            case 1:
+                _levelLength = LevelManager.levelManager.activeLevel * defaultLength;
+                minObstacleSpacing = defaultMinObstacleSpacing;
+                maxObstacleSpacing = defaultMaxObstacleSpacing;
+                rngMax = defaultRngMax;
+                break;
+
+            case 2:
+                _levelLength = LevelManager.levelManager.activeLevel * defaultLength;
+                minObstacleSpacing = defaultMinObstacleSpacing - 2;
+                maxObstacleSpacing = defaultMaxObstacleSpacing - 4;
+                rngMax = defaultRngMax + 1;
+                break;
+
+            case 3:
+                _levelLength = LevelManager.levelManager.activeLevel * defaultLength;
+                minObstacleSpacing = defaultMinObstacleSpacing - 3;
+                maxObstacleSpacing = defaultMaxObstacleSpacing - 6;
+                rngMax = defaultRngMax + 2;
+                break;
+        }
+
+    }
+
     public void Reset()
     {
 
@@ -123,6 +159,9 @@ public class LaneParent : MonoBehaviour
             }
         }
         Debug.Log("Cleared Array");
+        UpdateGenerationPerameters();
         PopulateLanes();
     }
+
+    
 }

@@ -19,6 +19,7 @@ public class PlayerStats : MonoBehaviour
     public bool LevelTwoComplete;
     public bool LevelThreeComplete;
     public bool FirstRun;
+    public bool CurrencyTotaled;
 
     public bool isAlive;
     public bool wingsEnabled;
@@ -48,6 +49,8 @@ public class PlayerStats : MonoBehaviour
         canJump = true;
         invincible = false;
         isJumping = false;
+        CurrencyTotaled = false;
+        health = maxHealth;
     }
 
     // Update is called once per frame
@@ -101,11 +104,18 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
+    public void UpdateTotalCurrency()
+    {
+        totalCurrency += (int)(currency * currencyMultiplier);
+        CurrencyTotaled = true;
+    }
+
     public void Reset()
     {
         health = maxHealth;
         currency = 0;
         isAlive = true;
         canJump = true;
+        CurrencyTotaled = false;
     }
 }
