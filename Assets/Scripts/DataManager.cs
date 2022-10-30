@@ -50,7 +50,7 @@ public class DataManager : MonoBehaviour
 
     public void LoadGlobalData()
     {
-        if (File.Exists(Application.persistentDataPath + "/playerData.dat"))
+        if (File.Exists(Application.persistentDataPath + "/globalData.dat"))
         {
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             FileStream globalFile = File.Open(Application.persistentDataPath + "/globalData.dat", FileMode.Open);

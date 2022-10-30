@@ -7,6 +7,15 @@ public class SoundManager : MonoBehaviour
     public AudioSource moneyAudio;
     public AudioSource damageAudio;
     public AudioSource healAudio;
+    public AudioSource jumpAudio;
+    public AudioSource glideAudio;
+    public AudioSource landingAudio;
+    public AudioSource menuBackAudio;
+    public AudioSource menuSelectionAudio;
+    public AudioSource mainMenuMusic;
+    public AudioSource gameplayMusic;
+    public float musicSliderValue;
+    public float soundEffectsValue;
     public static SoundManager soundManager;
 
     void Awake()
@@ -29,6 +38,14 @@ public class SoundManager : MonoBehaviour
         moneyAudio.playOnAwake = false;
         damageAudio.playOnAwake = false;
         healAudio.playOnAwake = false;
+        mainMenuMusic.playOnAwake = false;
+        gameplayMusic.playOnAwake = false;
+
+        moneyAudio.volume = soundEffectsValue;
+        damageAudio.volume = soundEffectsValue;
+        healAudio.volume = soundEffectsValue;
+        mainMenuMusic.volume = musicSliderValue;
+        gameplayMusic.volume = musicSliderValue;
     }
 
     // Update is called once per frame
@@ -53,5 +70,17 @@ public class SoundManager : MonoBehaviour
     {
         if (moneyAudio.isPlaying) return;
         moneyAudio.Play();
+    }
+
+    public void PlayMainMenuMusic()
+    {
+        if (mainMenuMusic.isPlaying) return;
+        mainMenuMusic.Play();
+    }
+
+    public void PlayGameplayMusic()
+    {
+        if (gameplayMusic.isPlaying) return;
+        gameplayMusic.Play();
     }
 }

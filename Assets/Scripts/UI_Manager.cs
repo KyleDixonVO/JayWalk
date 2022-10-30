@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class UI_Manager : MonoBehaviour
 {
+    //gameplay UI elements
     public TMP_Text CurrencyText;
     public TMP_Text HealthText;
     public TMP_Text CompletionText;
@@ -16,6 +17,19 @@ public class UI_Manager : MonoBehaviour
     public Slider jumpSlider;
     public float HealthFraction;
 
+    //upgrade UI elements
+    public TMP_Text totalCurrencyText;
+    public TMP_Text jumpCooldownText;
+    public TMP_Text currencyMultiplierText;
+    public TMP_Text maxHealthText;
+    public TMP_Text jumpIFramesText;
+    public TMP_Text wingsText;
+    public TMP_Text glideTimeText;
+    public TMP_Text swapSpeedText;
+    public Button glideTimeButton;
+
+
+    //canvases
     public Canvas gameplayCanvas;
     public Canvas gameOverCanvas;
     public Canvas pauseCanvas;
@@ -24,18 +38,26 @@ public class UI_Manager : MonoBehaviour
     public Canvas upgradeCanvas;
     public Canvas mainMenuCanvas;
 
+    //loadOptions parent for main menu
+    public GameObject loadOptionsParent;
+    public Button buttonLevelOne;
+    public Button buttonLevelTwo;
+    public Button buttonLevelThree;
+    public Button buttonGoBack;
+
+    public bool loadOptionsOpen;
 
     public static UI_Manager ui_manager;
 
-    public enum UI_State 
-    { 
+    public enum UI_State
+    {
         gameplay,
         paused,
         mainMenu,
         options,
         win,
         upgrade,
-        gameOver
+        results
     }
 
     public UI_State state;
@@ -66,6 +88,8 @@ public class UI_Manager : MonoBehaviour
         completionSlider = GameObject.Find("CompletionSlider").GetComponent<Slider>();
         jumpSlider = GameObject.Find("JumpSlider").GetComponent<Slider>();
         state = UI_State.mainMenu;
+        glideTimeButton.interactable = false;
+        CloseLoadMenu();
     }
 
     // Update is called once per frame
@@ -77,9 +101,9 @@ public class UI_Manager : MonoBehaviour
             GameplayUpdate();
         }
 
-        if (state == UI_State.gameplay && GameManager.gameManager.gameLoss == true)
+        if (state == UI_State.gameplay && (GameManager.gameManager.gameLoss == true || GameManager.gameManager.wonLevel == true))
         {
-            state = UI_State.gameOver;
+            state = UI_State.results;
         }
 
         if (state == UI_State.gameplay && GameManager.gameManager.gameWon == true)
@@ -95,6 +119,11 @@ public class UI_Manager : MonoBehaviour
         else if (state == UI_State.paused && !GameManager.gameManager.escapePressed)
         {
             state = returnFromPause;
+        }
+
+        if (state == UI_State.upgrade)
+        {
+            UpgradeMenuUpdate();
         }
 
         EvaluateSwitch();
@@ -127,7 +156,7 @@ public class UI_Manager : MonoBehaviour
 
     public void EvaluateSwitch()
     {
-        switch (state) 
+        switch (state)
         {
             case UI_State.mainMenu:
                 MainMenu();
@@ -159,7 +188,7 @@ public class UI_Manager : MonoBehaviour
                 Upgrade();
                 break;
 
-            case UI_State.gameOver:
+            case UI_State.results:
                 Time.timeScale = 0;
                 Gameover();
                 break;
@@ -191,6 +220,145 @@ public class UI_Manager : MonoBehaviour
     public void SwitchGameplay()
     {
         state = UI_State.gameplay;
+    }
+
+    public void SwitchUpgrade()
+    {
+        state = UI_State.upgrade;
+    }
+
+    public void UpgradeMenuUpdate()
+    {
+        totalCurrencyText.text = "Scum coin: " + PlayerStats.playerStats.totalCurrency.ToString();
+
+        if (UpgradeManager.upgradeManager.currentJumpCoolTier == UpgradeManager.upgradeManager.jumpCooldownTiers.Length - 1)
+        {
+            jumpCooldownText.text = "Level: " + UpgradeManager.upgradeManager.currentJumpCoolTier +
+                " Current value (Seconds): " + UpgradeManager.upgradeManager.jumpCooldownTiers[UpgradeManager.upgradeManager.currentJumpCoolTier] +
+                " Next value (Seconds): MAXED OUT";
+        }
+        else
+        {
+            jumpCooldownText.text = "Level: " + UpgradeManager.upgradeManager.currentJumpCoolTier +
+                " Current value (Seconds): " + UpgradeManager.upgradeManager.jumpCooldownTiers[UpgradeManager.upgradeManager.currentJumpCoolTier] +
+                " Next value (Seconds): " + UpgradeManager.upgradeManager.jumpCooldownTiers[UpgradeManager.upgradeManager.currentJumpCoolTier + 1];
+        }
+
+        if (UpgradeManager.upgradeManager.currentMultiplierTier == UpgradeManager.upgradeManager.currencyMultiplierTiers.Length - 1)
+        {
+            currencyMultiplierText.text = "Level: " + UpgradeManager.upgradeManager.currentMultiplierTier +
+                " Current Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier] +
+                " Next Value: MAXED OUT";
+        }
+        else
+        {
+            currencyMultiplierText.text = "Level: " + UpgradeManager.upgradeManager.currentMultiplierTier +
+               " Current Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier] +
+               " Next Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier + 1];
+        }
+
+        if (UpgradeManager.upgradeManager.currentMaxHealthTier == UpgradeManager.upgradeManager.maxHealthTiers.Length - 1)
+        {
+            maxHealthText.text = "Level: " + UpgradeManager.upgradeManager.currentMaxHealthTier +
+                " Current Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier] +
+                " Next Value: MAXED OUT";
+        }
+        else
+        {
+            maxHealthText.text = "Level: " + UpgradeManager.upgradeManager.currentMaxHealthTier +
+               " Current Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier] +
+               " Next Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier + 1];
+        }
+
+        if (UpgradeManager.upgradeManager.currentJumpIFrameTier == UpgradeManager.upgradeManager.jumpIFrameTiers.Length - 1)
+        {
+            jumpIFramesText.text = "Level: " + UpgradeManager.upgradeManager.currentJumpIFrameTier +
+                " Current Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier] +
+                " Next Value (Seconds): MAXED OUT";
+        }
+        else
+        {
+            jumpIFramesText.text = "Level: " + UpgradeManager.upgradeManager.currentJumpIFrameTier +
+                " Current Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier] +
+                " Next Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier + 1];
+        }
+
+        if (UpgradeManager.upgradeManager.currentWingEnabledTier == UpgradeManager.upgradeManager.wingsEnabledTiers.Length - 1)
+        {
+            wingsText.text = "Wings Acquired: " + PlayerStats.playerStats.wingsEnabled;
+        }
+        else
+        {
+            wingsText.text = "Wings Acquired: " + PlayerStats.playerStats.wingsEnabled;
+        }
+
+        if (UpgradeManager.upgradeManager.currentGlideTier == UpgradeManager.upgradeManager.glideTimeTiers.Length - 1)
+        {
+            glideTimeText.text = "Level: " + UpgradeManager.upgradeManager.currentGlideTier +
+                " Current Value (Seconds): " + UpgradeManager.upgradeManager.glideTimeTiers[UpgradeManager.upgradeManager.currentGlideTier] +
+                " Next Value (Seconds): MAXED OUT";
+        }
+        else
+        {
+            glideTimeText.text = "Level: " + UpgradeManager.upgradeManager.currentGlideTier +
+                " Current Value (Seconds): " + UpgradeManager.upgradeManager.glideTimeTiers[UpgradeManager.upgradeManager.currentGlideTier] +
+                " Next Value (Seconds): " + UpgradeManager.upgradeManager.glideTimeTiers[UpgradeManager.upgradeManager.currentGlideTier + 1];
+        }
+
+        if (UpgradeManager.upgradeManager.currentSwapTier == UpgradeManager.upgradeManager.swapSpeedTiers.Length - 1)
+        {
+            swapSpeedText.text = "Level: " + UpgradeManager.upgradeManager.currentSwapTier +
+                " Current Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier] +
+                " Next Value (Seconds): MAXED OUT";
+        }
+        else
+        {
+            swapSpeedText.text = "Level: " + UpgradeManager.upgradeManager.currentSwapTier +
+                " Current Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier] +
+                " Next Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier + 1];
+        }
+    }
+
+    public void OpenLoadMenu()
+    {
+        loadOptionsParent.SetActive(true);
+        loadOptionsOpen = true;
+    }
+
+    public void CloseLoadMenu()
+    {
+        loadOptionsParent.SetActive(false);
+        loadOptionsOpen = false;
+    }
+
+    public void EnableLoadButtons()
+    {
+        if (PlayerStats.playerStats.LevelOneComplete)
+        {
+            buttonLevelOne.interactable = true;
+        }
+        else
+        {
+            buttonLevelOne.interactable = false;
+        }
+
+        if (PlayerStats.playerStats.LevelTwoComplete)
+        {
+            buttonLevelTwo.interactable = true;
+        }
+        else
+        {
+            buttonLevelTwo.interactable = false;
+        }
+
+        if (PlayerStats.playerStats.LevelThreeComplete)
+        {
+            buttonLevelThree.interactable = true;
+        }
+        else
+        {
+            buttonLevelThree.interactable = false;
+        }
     }
 
     public void MainMenu()

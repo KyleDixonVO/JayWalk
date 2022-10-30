@@ -10,9 +10,13 @@ public class PlayerMovement : MonoBehaviour
     public float elapsedTime = 0;
     public float elapsedJumpIFrameTime;
     int lane;
+    public bool atEndOfLevel;
     private bool runningIFrames;
     private bool runningJumpCooldown;
     private bool runningJumpIFrames;
+    public float laneSwapTimer;
+    public Vector2 Endpoint;
+    public Vector2 GameObjectPosition;
     public static PlayerMovement playerMovement;
 
     void Awake()
@@ -34,6 +38,8 @@ public class PlayerMovement : MonoBehaviour
         // starts player in middle lane
         lane = 2;
         elapsedTime = PlayerStats.playerStats.jumpCooldown;
+        laneSwapTimer = 0;
+        atEndOfLevel = false;
     }
 
     // Update is called once per frame
@@ -43,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
         if (this.gameObject.transform.position.y >= LaneParent.laneParent.levelLength || !PlayerStats.playerStats.isAlive)
         {
             this.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            atEndOfLevel = true;
             return;
         }
 
@@ -51,6 +58,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             lane--;
+            laneSwapTimer = 0;
             if (lane < 0)
             {
                 lane = 0;
@@ -61,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             lane++;
+            laneSwapTimer = 0;
             if (lane > 4)
             {
                 lane = 4;
@@ -92,10 +101,9 @@ public class PlayerMovement : MonoBehaviour
 
         currentSpeed = this.gameObject.GetComponent<Rigidbody2D>().velocity.y;
 
+        Endpoint = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
         this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
-
-        
-
+        //this.gameObject.transform.position = Vector2.MoveTowards(transform.position, Endpoint, PlayerStats.playerStats.laneSwapSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -137,6 +145,8 @@ public class PlayerMovement : MonoBehaviour
         this.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         lane = 2;
         this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, 0);
+        atEndOfLevel = false;
+        
     }
 
     public void JumpCooldown(float timer)
