@@ -182,7 +182,7 @@ public class UI_Manager : MonoBehaviour
         }
         else
         {
-            jumpSlider.value = ((float)PlayerMovement.playerMovement.elapsedTime / 1);
+            jumpSlider.value = ((float)PlayerMovement.playerMovement.elapsedTime / PlayerStats.playerStats.jumpCooldown);
         }
     }
 

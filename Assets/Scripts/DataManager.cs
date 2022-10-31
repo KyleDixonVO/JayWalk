@@ -169,6 +169,10 @@ public class DataManager : MonoBehaviour
             UpgradeManager.upgradeManager.currentSwapTier = playerData.currentSwapTier;
             UpgradeManager.upgradeManager.currentWingEnabledTier = playerData.currentWingEnabledTier;
         }
+        else
+        {
+            ResetPlayerData();
+        }
     }
 
     [Serializable]

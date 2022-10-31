@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     public float laneSwapTimer;
     public Vector2 Endpoint;
     public Vector2 GameObjectPosition;
+    public GameObject wingsObject;
     public static PlayerMovement playerMovement;
 
     void Awake()
@@ -43,11 +44,15 @@ public class PlayerMovement : MonoBehaviour
         elapsedTime = PlayerStats.playerStats.jumpCooldown;
         laneSwapTimer = 0;
         atEndOfLevel = false;
+        wingsObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (UI_Manager.ui_manager.state != UI_Manager.UI_State.gameplay) return;
+
+
         // Stops the player from moving if they are dead or if they are at the end of a level
         if (this.gameObject.transform.position.y >= LaneParent.laneParent.levelLength || !PlayerStats.playerStats.isAlive)
         {
@@ -99,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (PlayerStats.playerStats.canJump)
             {
+                Debug.Log("Jumping");
                 PlayerStats.playerStats.canJump = false;
                 runningJumpCooldown = true;
                 runningJumpIFrames = true;
@@ -106,13 +112,27 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        //if (Input.GetKey(KeyCode.Space))
-        //{
-        //    if (PlayerStats.playerStats.isJumping)
-        //    {
-        //        GlideIFrames();
-        //    }
-        //}
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (PlayerStats.playerStats.isJumping)
+            {
+                Debug.Log("Attempting Glide");
+                GlideIFrames();
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            gliding = false;
+            wingsObject.SetActive(false);
+        }
+
+        if (PlayerStats.playerStats.isJumping == false)
+        {
+            elapsedGlideTime = 0;
+            Debug.Log("Glide time reset");
+        }
+
 
         JumpCooldown(PlayerStats.playerStats.jumpCooldown);
         JumpingIFrames(PlayerStats.playerStats.jumpIFrames);
@@ -180,17 +200,21 @@ public class PlayerMovement : MonoBehaviour
 
     public void JumpCooldown(float timer)
     {
+        if (gliding) return;
         if (!runningJumpCooldown)
         {
             elapsedTime = 0f;
         }
         else if (!PlayerStats.playerStats.canJump)
         {
-            elapsedTime += Time.deltaTime / timer;
-            //Debug.Log(elapsedTime);
+            elapsedTime += Time.deltaTime;
+            //Debug.Log("Cooldown time: " + elapsedTime);
         }
-        if (elapsedTime >= 1)
+
+        if (elapsedTime >= PlayerStats.playerStats.jumpCooldown)
         {
+            //Debug.Log(PlayerStats.playerStats.jumpCooldown);
+            //Debug.Log("Cooldown complete");
             PlayerStats.playerStats.canJump = true;
             runningJumpCooldown = false;
 
@@ -216,6 +240,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void JumpingIFrames(float timer)
     {
+        if (gliding) return;
         if (!runningJumpIFrames)
         {
             elapsedJumpIFrameTime = 0f;
@@ -225,10 +250,10 @@ public class PlayerMovement : MonoBehaviour
             PlayerStats.playerStats.isJumping = true;
             runningJumpIFrames = true;
             elapsedJumpIFrameTime += Time.deltaTime;
-            Debug.Log(elapsedJumpIFrameTime);
+            //Debug.Log(elapsedJumpIFrameTime);
         }
 
-        if (gliding) return;
+
         if(elapsedJumpIFrameTime >= timer)
         {
             PlayerStats.playerStats.isJumping = false;
@@ -239,22 +264,26 @@ public class PlayerMovement : MonoBehaviour
 
     public void GlideIFrames()
     {
-        if (PlayerStats.playerStats.wingsEnabled == false) return;
-        if (!gliding)
+        if (PlayerStats.playerStats.wingsEnabled == false)
         {
-            elapsedGlideTime = 0f;
+            Debug.Log("No wings");
+            return;
         }
-        else if (elapsedGlideTime < PlayerStats.playerStats.glideTime)
+        if (elapsedGlideTime < PlayerStats.playerStats.glideTime)
         {
             gliding = true;
-            elapsedGlideTime += Time.deltaTime / PlayerStats.playerStats.glideTime;
+            elapsedGlideTime += Time.deltaTime;
             Debug.Log("gliding");
+            Debug.Log(elapsedGlideTime);
+            wingsObject.SetActive(true);
         }
-
-        if (elapsedJumpIFrameTime >= 1)
+        if (elapsedGlideTime >= PlayerStats.playerStats.glideTime)
         {
             gliding = false;
             Debug.Log("no longer gliding");
+            wingsObject.SetActive(false);
+
         }
+
     }
 }
