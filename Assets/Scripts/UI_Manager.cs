@@ -247,6 +247,7 @@ public class UI_Manager : MonoBehaviour
     public void SwitchMainMenu()
     {
         state = UI_State.mainMenu;
+        GameManager.gameManager.escapePressed = false;
     }
 
     public void SwitchOptions()

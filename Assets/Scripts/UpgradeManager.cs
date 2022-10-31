@@ -8,11 +8,11 @@ public class UpgradeManager : MonoBehaviour
 
     public float[] swapSpeedTiers = new float[]
     {
-        0.1f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f
+        1.0f, 2f, 4f, 8f, 16f, 32f
     };
     public int[] swapSpeedCosts = new int[]
     {
-        0, 100, 200, 400, 800, 1000
+        0, 20, 40, 60, 80, 100
     };
     public int currentSwapTier;
 
@@ -22,7 +22,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int[] jumpCooldownCosts = new int[]
     {
-        0, 150, 300, 450, 600, 750
+        0, 30, 45, 60, 75, 90
     };
     public int currentJumpCoolTier;
 
@@ -32,7 +32,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int[] maxHealthCosts = new int[]
     {
-        0, 200, 400, 800, 1200, 1600
+        0, 25, 50, 75, 100, 125
     };
     public int currentMaxHealthTier;
 
@@ -42,7 +42,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int[] jumpIFrameCosts = new int[]
     {
-        0, 200, 400, 600, 800, 1000
+        0, 20, 40, 60, 80, 100
     };
     public int currentJumpIFrameTier;
 
@@ -52,7 +52,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int[] currencyMultiplierCosts = new int[]
     {
-        0, 250, 400, 650, 800, 950
+        0, 30, 50, 70, 90, 110
     };
     public int currentMultiplierTier;
 
@@ -62,7 +62,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int[] glideTimeCosts = new int[]
     {
-        0, 200, 400, 800, 1200, 1600
+        0, 25, 50, 75, 100, 125
     };
     public int currentGlideTier;
 
@@ -72,7 +72,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int[] wingsEnabledCosts = new int[]
     {
-        0, 500
+        0, 50
     };
     public int currentWingEnabledTier;
 

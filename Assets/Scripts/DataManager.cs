@@ -70,17 +70,17 @@ public class DataManager : MonoBehaviour
 
     public void ResetPlayerData()
     {
-        PlayerStats.playerStats.maxHealth = 3;
-        PlayerStats.playerStats.health = 3;
+        PlayerStats.playerStats.maxHealth = (int)UpgradeManager.upgradeManager.maxHealthTiers[0];
+        PlayerStats.playerStats.health = PlayerStats.playerStats.maxHealth;
         PlayerStats.playerStats.currency = 0;
         PlayerStats.playerStats.totalCurrency = 0;
         PlayerStats.playerStats.invincibilityTime = 0.5f;
-        PlayerStats.playerStats.laneSwapSpeed = 1.0f;
-        PlayerStats.playerStats.jumpCooldown = 3.0f;
-        PlayerStats.playerStats.jumpIFrames = 0.5f;
+        PlayerStats.playerStats.laneSwapSpeed = UpgradeManager.upgradeManager.swapSpeedTiers[0];
+        PlayerStats.playerStats.jumpCooldown = UpgradeManager.upgradeManager.jumpCooldownTiers[0];
+        PlayerStats.playerStats.jumpIFrames = UpgradeManager.upgradeManager.jumpIFrameTiers[0];
         PlayerStats.playerStats.wingsEnabled = false;
-        PlayerStats.playerStats.currencyMultiplier = 1.0f;
-        PlayerStats.playerStats.glideTime = 0.0f;
+        PlayerStats.playerStats.currencyMultiplier = UpgradeManager.upgradeManager.currencyMultiplierTiers[0];
+        PlayerStats.playerStats.glideTime = UpgradeManager.upgradeManager.glideTimeTiers[0];
         PlayerStats.playerStats.LevelOneComplete = false;
         PlayerStats.playerStats.LevelTwoComplete = false;
         PlayerStats.playerStats.LevelThreeComplete = false;

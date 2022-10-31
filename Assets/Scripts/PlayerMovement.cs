@@ -50,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("Swap Speed Tier: " + PlayerStats.playerStats.laneSwapSpeed);
         if (UI_Manager.ui_manager.state != UI_Manager.UI_State.gameplay) return;
 
 
@@ -73,8 +74,8 @@ public class PlayerMovement : MonoBehaviour
         currentSpeed = this.gameObject.GetComponent<Rigidbody2D>().velocity.y;
 
         Endpoint = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
-        this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
-        //this.gameObject.transform.position = Vector2.MoveTowards(transform.position, Endpoint, PlayerStats.playerStats.laneSwapSpeed * Time.deltaTime);
+        //this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
+        this.gameObject.transform.position = Vector2.MoveTowards(transform.position, Endpoint, PlayerStats.playerStats.laneSwapSpeed * Time.deltaTime * 7);
 
         // accelerate until player hits max speed -- slow on collision with obstacle
         // check left/right input -- change lane based on input. Input does not loop around pac-man style
@@ -116,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (PlayerStats.playerStats.isJumping)
             {
-                Debug.Log("Attempting Glide");
+                //Debug.Log("Attempting Glide");
                 GlideIFrames();
             }
         }
@@ -130,7 +131,7 @@ public class PlayerMovement : MonoBehaviour
         if (PlayerStats.playerStats.isJumping == false)
         {
             elapsedGlideTime = 0;
-            Debug.Log("Glide time reset");
+            //Debug.Log("Glide time reset");
         }
 
 
