@@ -101,13 +101,20 @@ public class LaneParent : MonoBehaviour
                         }
                         else
                         {
-                            // spawn a new obstacle
-
-                            // later game versions will probably need a fourth option to determine whether an obstacle should be of the jumpable variety or not
-
-                            GameObject temp = Instantiate(ObstaclePrefab, lane[i].transform);
-                            temp.transform.position = new Vector2(lane[i].transform.position.x, generationDistance);
-                            obstacleLists[i, j] = temp;
+                            if (LevelManager.levelManager.activeLevel != 1 && nextObject > rngMax - 8)
+                            {
+                                // spawn a new tall obstacle
+                                GameObject temp = Instantiate(TallObstaclePrefab, lane[i].transform);
+                                temp.transform.position = new Vector2(lane[i].transform.position.x, generationDistance);
+                                obstacleLists[i, j] = temp;
+                            }
+                            else
+                            {
+                                // spawn a new obstacle
+                                GameObject temp = Instantiate(ObstaclePrefab, lane[i].transform);
+                                temp.transform.position = new Vector2(lane[i].transform.position.x, generationDistance);
+                                obstacleLists[i, j] = temp;
+                            }
                         }
                     }
 
@@ -126,6 +133,7 @@ public class LaneParent : MonoBehaviour
                 minObstacleSpacing = defaultMinObstacleSpacing;
                 maxObstacleSpacing = defaultMaxObstacleSpacing;
                 rngMax = defaultRngMax;
+                finishLine.transform.position = new Vector2(0, _levelLength);
                 break;
 
             case 2:
@@ -133,6 +141,7 @@ public class LaneParent : MonoBehaviour
                 minObstacleSpacing = defaultMinObstacleSpacing - 2;
                 maxObstacleSpacing = defaultMaxObstacleSpacing - 4;
                 rngMax = defaultRngMax + 1;
+                finishLine.transform.position = new Vector2(0, _levelLength);
                 break;
 
             case 3:
@@ -140,6 +149,7 @@ public class LaneParent : MonoBehaviour
                 minObstacleSpacing = defaultMinObstacleSpacing - 3;
                 maxObstacleSpacing = defaultMaxObstacleSpacing - 6;
                 rngMax = defaultRngMax + 2;
+                finishLine.transform.position = new Vector2(0, _levelLength);
                 break;
         }
 
@@ -154,7 +164,7 @@ public class LaneParent : MonoBehaviour
         {
             for (int j = 0; j < lane[i].transform.childCount; j++)
             {
-                Debug.Log(i + " " + j);
+                //Debug.Log(i + " " + j);
                 Destroy(lane[i].transform.GetChild(j).gameObject);
             }
         }

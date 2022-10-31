@@ -51,6 +51,7 @@ public class UI_Manager : MonoBehaviour
     public Canvas winCanvas;
     public Canvas upgradeCanvas;
     public Canvas mainMenuCanvas;
+    public Canvas openingCutsceneCanvas;
 
     //loadOptions parent for main menu
     public GameObject loadOptionsParent;
@@ -65,6 +66,17 @@ public class UI_Manager : MonoBehaviour
     public Slider MusicVolumeSlider;
     public Slider FXVolumeSlider;
 
+    //End cutscene elements
+    public GameObject endingCutsceneParent;
+    public Sprite[] endingCutSceneFrames;
+    private int activeEndFrame;
+
+
+    //Starting cutscene elements
+    public GameObject startingCutsceneFrameParent;
+    public Sprite[] startingCutsceneFrames;
+    private int activeStartFrame;
+
     public static UI_Manager ui_manager;
 
     public enum UI_State
@@ -75,7 +87,8 @@ public class UI_Manager : MonoBehaviour
         options,
         win,
         upgrade,
-        results
+        results,
+        cutscene
     }
 
     public UI_State state;
@@ -108,6 +121,7 @@ public class UI_Manager : MonoBehaviour
         state = UI_State.mainMenu;
         glideTimeButton.interactable = false;
         CloseLoadMenu();
+        activeEndFrame = 0;
     }
 
     // Update is called once per frame
@@ -210,6 +224,11 @@ public class UI_Manager : MonoBehaviour
                 Time.timeScale = 0;
                 Gameover();
                 UpdateResultsText();
+                break;
+
+            case UI_State.cutscene:
+                Time.timeScale = 0;
+                Cutscene();
                 break;
         }
 
@@ -366,6 +385,7 @@ public class UI_Manager : MonoBehaviour
     public void OpenLoadMenu()
     {
         loadOptionsParent.SetActive(true);
+        EnableLoadButtons();
         loadOptionsOpen = true;
     }
 
@@ -377,7 +397,7 @@ public class UI_Manager : MonoBehaviour
 
     public void EnableLoadButtons()
     {
-        if (PlayerStats.playerStats.LevelOneComplete)
+        if (PlayerStats.playerStats.LevelOneComplete == true)
         {
             buttonLevelOne.interactable = true;
         }
@@ -386,7 +406,7 @@ public class UI_Manager : MonoBehaviour
             buttonLevelOne.interactable = false;
         }
 
-        if (PlayerStats.playerStats.LevelTwoComplete)
+        if (PlayerStats.playerStats.LevelTwoComplete == true)
         {
             buttonLevelTwo.interactable = true;
         }
@@ -395,7 +415,7 @@ public class UI_Manager : MonoBehaviour
             buttonLevelTwo.interactable = false;
         }
 
-        if (PlayerStats.playerStats.LevelThreeComplete)
+        if (PlayerStats.playerStats.LevelThreeComplete == true)
         {
             buttonLevelThree.interactable = true;
         }
@@ -408,7 +428,7 @@ public class UI_Manager : MonoBehaviour
     public void UpdateResultsText()
     {
         currentLevelText.text = "Level " + LevelManager.levelManager.activeLevel;
-        currencyCollectedText.text = "Currency Collected: " + PlayerStats.playerStats.currency + " Total Currency: " + PlayerStats.playerStats.totalCurrency;
+        currencyCollectedText.text = "Currency Collected: " + PlayerStats.playerStats.currency + " x " + PlayerStats.playerStats.currencyMultiplier + " = " + (int)(PlayerStats.playerStats.currency*PlayerStats.playerStats.currencyMultiplier) + "\r\n Total Currency: " + PlayerStats.playerStats.totalCurrency;
         if (PlayerMovement.playerMovement == null) return;
         distanceTravelledText.text = "Distance Travelled: " + PlayerMovement.playerMovement.gameObject.transform.position.y + " m";
     }
@@ -422,6 +442,7 @@ public class UI_Manager : MonoBehaviour
         winCanvas.enabled = false;
         upgradeCanvas.enabled = false;
         gameOverCanvas.enabled = false;
+        openingCutsceneCanvas.enabled = false;
     }
 
     public void Gameplay()
@@ -433,6 +454,7 @@ public class UI_Manager : MonoBehaviour
         winCanvas.enabled = false;
         upgradeCanvas.enabled = false;
         gameOverCanvas.enabled = false;
+        openingCutsceneCanvas.enabled = false;
     }
 
     public void Pause()
@@ -440,6 +462,7 @@ public class UI_Manager : MonoBehaviour
         pauseCanvas.enabled = true;
         gameplayCanvas.enabled = true;
         optionsCanvas.enabled = false;
+        
     }
 
     public void Options()
@@ -451,6 +474,7 @@ public class UI_Manager : MonoBehaviour
         winCanvas.enabled = false;
         upgradeCanvas.enabled = false;
         gameOverCanvas.enabled = false;
+        openingCutsceneCanvas.enabled = false;
     }
 
     public void Win()
@@ -462,6 +486,7 @@ public class UI_Manager : MonoBehaviour
         winCanvas.enabled = true;
         upgradeCanvas.enabled = false;
         gameOverCanvas.enabled = false;
+        openingCutsceneCanvas.enabled = false;
     }
 
     public void Gameover()
@@ -473,6 +498,7 @@ public class UI_Manager : MonoBehaviour
         winCanvas.enabled = false;
         upgradeCanvas.enabled = false;
         gameOverCanvas.enabled = true;
+        openingCutsceneCanvas.enabled = false;
     }
 
     public void Upgrade()
@@ -484,5 +510,56 @@ public class UI_Manager : MonoBehaviour
         winCanvas.enabled = false;
         upgradeCanvas.enabled = true;
         gameOverCanvas.enabled = false;
+        openingCutsceneCanvas.enabled = false;
+    }
+
+    public void Cutscene()
+    {
+        mainMenuCanvas.enabled = false;
+        gameplayCanvas.enabled = false;
+        pauseCanvas.enabled = false;
+        optionsCanvas.enabled = false;
+        winCanvas.enabled = false;
+        upgradeCanvas.enabled = false;
+        gameOverCanvas.enabled = false;
+        openingCutsceneCanvas.enabled = true;
+        
+    }
+
+    public void ShowOpeningCutscene()
+    {
+        state = UI_State.cutscene;
+        activeStartFrame = 0;
+        startingCutsceneFrameParent.GetComponent<Image>().sprite = startingCutsceneFrames[activeStartFrame];
+    }
+
+    public void NextEndFrame()
+    {
+        activeEndFrame++;
+
+        if (activeStartFrame == startingCutsceneFrames.Length)
+        {
+
+        }
+        else
+        {
+            endingCutsceneParent.GetComponent<Image>().sprite = endingCutSceneFrames[activeEndFrame];
+        }
+    }
+    
+    public void NextStartFrame()
+    {
+        activeStartFrame++;
+        if (activeStartFrame >= startingCutsceneFrames.Length)
+        {
+            PlayerStats.playerStats.FirstRun = false;
+            DataManager.dataManager.SavePlayerData();
+            state = UI_State.mainMenu;
+            openingCutsceneCanvas.gameObject.SetActive(false);
+        }
+        else
+        {
+            startingCutsceneFrameParent.GetComponent<Image>().sprite = startingCutsceneFrames[activeStartFrame];
+        }
     }
 }

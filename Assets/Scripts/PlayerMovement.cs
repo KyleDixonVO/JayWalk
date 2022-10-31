@@ -81,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 lane = 0;
             }
-            Debug.Log("Current lane: " + lane);
+            //Debug.Log("Current lane: " + lane);
         }
 
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
@@ -92,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 lane = 4;
             }
-            Debug.Log("Current lane: " + lane);
+            //Debug.Log("Current lane: " + lane);
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -102,6 +102,7 @@ public class PlayerMovement : MonoBehaviour
                 PlayerStats.playerStats.canJump = false;
                 runningJumpCooldown = true;
                 runningJumpIFrames = true;
+                SoundManager.soundManager.PlayJumpAudio();
             }
         }
 
@@ -119,9 +120,26 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (PlayerStats.playerStats.isJumping || gliding) return;
+        
 
         if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            if (PlayerStats.playerStats.isJumping || gliding) return;
+            if (!PlayerStats.playerStats.invincible)
+            {
+                PlayerStats.playerStats.TakeDamage(1);
+                SoundManager.soundManager.PlayDamageAudio();
+            }
+
+            if (!runningIFrames)
+            {
+                StartCoroutine(IFrames(PlayerStats.playerStats.invincibilityTime));
+            }
+
+            this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1);
+            collision.gameObject.SetActive(false);
+        }
+        else if (collision.gameObject.CompareTag("TallObstacle"))
         {
             if (!PlayerStats.playerStats.invincible)
             {
@@ -169,7 +187,7 @@ public class PlayerMovement : MonoBehaviour
         else if (!PlayerStats.playerStats.canJump)
         {
             elapsedTime += Time.deltaTime / timer;
-            Debug.Log(elapsedTime);
+            //Debug.Log(elapsedTime);
         }
         if (elapsedTime >= 1)
         {
@@ -202,7 +220,7 @@ public class PlayerMovement : MonoBehaviour
         {
             elapsedJumpIFrameTime = 0f;
         }
-        else if (elapsedJumpIFrameTime < 1)
+        else if (elapsedJumpIFrameTime < timer)
         {
             PlayerStats.playerStats.isJumping = true;
             runningJumpIFrames = true;
@@ -215,6 +233,7 @@ public class PlayerMovement : MonoBehaviour
         {
             PlayerStats.playerStats.isJumping = false;
             runningJumpIFrames = false;
+            SoundManager.soundManager.PlayLandingAudio();
         }
     }
 
@@ -229,11 +248,13 @@ public class PlayerMovement : MonoBehaviour
         {
             gliding = true;
             elapsedGlideTime += Time.deltaTime / PlayerStats.playerStats.glideTime;
+            Debug.Log("gliding");
         }
 
         if (elapsedJumpIFrameTime >= 1)
         {
             gliding = false;
+            Debug.Log("no longer gliding");
         }
     }
 }

@@ -9,6 +9,7 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager dataManager;
 
+    public bool saving;
     public float musicVolume;
     public float FXVolume;
 
@@ -40,7 +41,7 @@ public class DataManager : MonoBehaviour
     {
         BinaryFormatter binaryFormatter = new BinaryFormatter();
         FileStream globalFile = File.Create(Application.persistentDataPath + "/globalData.dat");
-
+        saving = true;
         GlobalData globalData = new GlobalData();
         globalData.musicVolume = musicVolume;
         globalData.FXVolume = FXVolume;
@@ -49,6 +50,7 @@ public class DataManager : MonoBehaviour
 
         binaryFormatter.Serialize(globalFile, globalData);
         globalFile.Close();
+        saving = false;
     }
 
     public void LoadGlobalData()
@@ -62,8 +64,6 @@ public class DataManager : MonoBehaviour
 
             musicVolume = globalData.musicVolume;
             FXVolume = globalData.FXVolume;
-
-            Debug.Log(musicVolume + "  " + FXVolume);
 
         }
     }
@@ -101,7 +101,7 @@ public class DataManager : MonoBehaviour
     {
         BinaryFormatter binaryFormatter = new BinaryFormatter();
         FileStream playerFile = File.Create(Application.persistentDataPath + "/playerData.dat");
-
+        saving = true;
         PlayerData playerData = new PlayerData();
 
         playerData.maxHealth = PlayerStats.playerStats.maxHealth;
@@ -131,6 +131,7 @@ public class DataManager : MonoBehaviour
 
         binaryFormatter.Serialize(playerFile, playerData);
         playerFile.Close();
+        saving = false;
     }
 
     public void LoadPlayerData()

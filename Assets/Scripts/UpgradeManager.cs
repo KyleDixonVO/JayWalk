@@ -94,7 +94,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (currentSwapTier == swapSpeedTiers.Length - 1)
         {
-            //play sound to indicate insufficient money
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
             return;
         }
 
@@ -103,7 +103,8 @@ public class UpgradeManager : MonoBehaviour
             currentSwapTier++;
             PlayerStats.playerStats.laneSwapSpeed = swapSpeedTiers[currentSwapTier];
             PlayerStats.playerStats.totalCurrency -= swapSpeedCosts[currentSwapTier];
-            //play sound to indicate purchase has been made
+            SoundManager.soundManager.PlayPurchaseAudio();
+            Debug.Log(PlayerStats.playerStats.laneSwapSpeed);
         }
     }
 
@@ -111,7 +112,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (currentJumpCoolTier == jumpCooldownTiers.Length - 1) 
         {
-            //play sound to indicate insufficient money
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
             return;
         }
         if (jumpCooldownCosts[currentJumpCoolTier + 1] <= PlayerStats.playerStats.totalCurrency)
@@ -119,7 +120,8 @@ public class UpgradeManager : MonoBehaviour
             currentJumpCoolTier ++;
             PlayerStats.playerStats.jumpCooldown = jumpCooldownTiers[currentJumpCoolTier];
             PlayerStats.playerStats.totalCurrency -= jumpCooldownCosts[currentJumpCoolTier];
-            //play sound to indicate purchase has been made
+            SoundManager.soundManager.PlayPurchaseAudio();
+            Debug.Log(PlayerStats.playerStats.jumpCooldown);
         }
     }
 
@@ -127,7 +129,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (currentMaxHealthTier == maxHealthTiers.Length - 1)
         {
-            //play sound to indicate insufficient money
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
             return;
         }
         if (maxHealthCosts[currentMaxHealthTier + 1] <= PlayerStats.playerStats.totalCurrency)
@@ -135,7 +137,8 @@ public class UpgradeManager : MonoBehaviour
             currentMaxHealthTier++;
             PlayerStats.playerStats.maxHealth = (int)maxHealthTiers[currentMaxHealthTier];
             PlayerStats.playerStats.totalCurrency -= maxHealthCosts[currentMaxHealthTier];
-            //play sound to indicate purchase has been made
+            SoundManager.soundManager.PlayPurchaseAudio();
+            Debug.Log(PlayerStats.playerStats.maxHealth);
         }
     }
 
@@ -143,15 +146,16 @@ public class UpgradeManager : MonoBehaviour
     {
         if (currentJumpIFrameTier == jumpIFrameTiers.Length - 1)
         {
-            //play sound to indicate insufficient money
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
             return;
         }
         if (jumpIFrameCosts[currentJumpIFrameTier + 1] <= PlayerStats.playerStats.totalCurrency)
         {
             currentJumpIFrameTier++;
-            PlayerStats.playerStats.laneSwapSpeed = jumpIFrameTiers[currentJumpIFrameTier];
+            PlayerStats.playerStats.jumpIFrames = jumpIFrameTiers[currentJumpIFrameTier];
             PlayerStats.playerStats.totalCurrency -= jumpIFrameCosts[currentJumpIFrameTier];
-            //play sound to indicate purchase has been made
+            SoundManager.soundManager.PlayPurchaseAudio();
+            Debug.Log(PlayerStats.playerStats.jumpIFrames);
         }
     }
 
@@ -159,7 +163,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (currentMultiplierTier == currencyMultiplierTiers.Length - 1)
         {
-            //play sound to indicate insufficient money
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
             return;
         }
         if (currencyMultiplierCosts[currentMultiplierTier + 1] <= PlayerStats.playerStats.totalCurrency)
@@ -167,7 +171,8 @@ public class UpgradeManager : MonoBehaviour
             currentMultiplierTier++;
             PlayerStats.playerStats.currencyMultiplier = currencyMultiplierTiers[currentMultiplierTier];
             PlayerStats.playerStats.totalCurrency -= currencyMultiplierCosts[currentMultiplierTier];
-            //play sound to indicate purchase has been made
+            SoundManager.soundManager.PlayPurchaseAudio();
+            Debug.Log(PlayerStats.playerStats.currencyMultiplier);
         }
 
     }
@@ -177,7 +182,7 @@ public class UpgradeManager : MonoBehaviour
         if (currentGlideTier == glideTimeTiers.Length - 1)
         {
 
-            //play sound to indicate insufficient money
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
             return;
         }
         if (glideTimeCosts[currentGlideTier + 1] <= PlayerStats.playerStats.totalCurrency)
@@ -185,7 +190,8 @@ public class UpgradeManager : MonoBehaviour
             currentGlideTier++;
             PlayerStats.playerStats.glideTime = glideTimeTiers[currentGlideTier];
             PlayerStats.playerStats.totalCurrency -= glideTimeCosts[currentGlideTier];
-            //play sound to indicate purchase has been made
+            SoundManager.soundManager.PlayPurchaseAudio();
+            Debug.Log(PlayerStats.playerStats.glideTime);
         }
 
     }
@@ -194,7 +200,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (currentWingEnabledTier == wingsEnabledTiers.Length - 1)
         {
-            //play sound to indicate insufficient money
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
             UI_Manager.ui_manager.glideTimeButton.interactable = true;
             return;
         }
@@ -205,7 +211,8 @@ public class UpgradeManager : MonoBehaviour
             PlayerStats.playerStats.wingsEnabled = true;
             PlayerStats.playerStats.totalCurrency -= wingsEnabledCosts[currentWingEnabledTier];
             Debug.Log("Acquired Wings: " + PlayerStats.playerStats.wingsEnabled);
-            //play sound to indicate purchase has been made
+            SoundManager.soundManager.PlayPurchaseAudio();
+            Debug.Log(PlayerStats.playerStats.wingsEnabled);
         }
 
     }

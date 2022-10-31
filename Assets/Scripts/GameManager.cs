@@ -83,17 +83,26 @@ public class GameManager : MonoBehaviour
 
         if (PlayerMovement.playerMovement != null)
         {
-            //PlayerMovement.playerMovement.Reset();
+            PlayerMovement.playerMovement.Reset();
         }
  
     }
 
     public void SwitchToGamePlay()
     {
-        SceneManager.LoadScene(1);
-        UI_Manager.ui_manager.SwitchGameplay();
-        gameplayActive = true;
-        ResetRun();
+        if (PlayerStats.playerStats.FirstRun)
+        {
+            UI_Manager.ui_manager.ShowOpeningCutscene();
+        }
+        else
+        {
+            if (gameplayActive) return;
+            Debug.Log("Switching to game play");
+            SceneManager.LoadScene(1);
+            UI_Manager.ui_manager.SwitchGameplay();
+            gameplayActive = true;
+            ResetRun();
+        }
     }
 
     public void SwitchToMainMenu()
@@ -114,19 +123,19 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                LaneParent.laneParent.Reset();
-                PlayerStats.playerStats.Reset();
-                PlayerMovement.playerMovement.Reset();
+                //LaneParent.laneParent.Reset();
+                //PlayerStats.playerStats.Reset();
+                //PlayerMovement.playerMovement.Reset();
             }
 
             if (Input.GetKeyDown(KeyCode.L))
             {
-                DataManager.dataManager.LoadPlayerData();
+                //DataManager.dataManager.LoadPlayerData();
             }
 
             if (Input.GetKeyDown(KeyCode.I))
             {
-                DataManager.dataManager.SavePlayerData();
+                //DataManager.dataManager.SavePlayerData();
             }
 
             if (Input.GetKeyDown(KeyCode.H))
@@ -137,13 +146,18 @@ public class GameManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.U))
             {
-                UI_Manager.ui_manager.SwitchUpgrade();
-                Debug.Log("Upgrade Menu Active");
+                //UI_Manager.ui_manager.SwitchUpgrade();
+                //Debug.Log("Upgrade Menu Active");
             }
 
             if (Input.GetKeyDown(KeyCode.M))
             {
                 PlayerStats.playerStats.totalCurrency = 900000;
+            }
+
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                gameWon = true;
             }
         }
     }
@@ -151,16 +165,19 @@ public class GameManager : MonoBehaviour
     public void LoadLevelOne()
     {
         SwitchToGamePlay();
+        LevelManager.levelManager.LoadLevel1();
     }
 
     public void LoadLevelTwo()
     {
         SwitchToGamePlay();
+        LevelManager.levelManager.LoadLevel2();
     }
 
     public void LoadLevelThree()
     {
         SwitchToGamePlay();
+        LevelManager.levelManager.LoadLevel3();
     }
 
     public void FinishShopping()
@@ -169,12 +186,16 @@ public class GameManager : MonoBehaviour
         UI_Manager.ui_manager.SwitchGameplay();
         if (gameLoss)
         {
+            Debug.Log("reset run");
             ResetRun();
+            Debug.Log(DataManager.dataManager.saving);
         }
         else if (wonLevel)
         {
             LevelManager.levelManager.LevelComplete();
+            Debug.Log("level complete");
             ResetRun();
+            Debug.Log(DataManager.dataManager.saving);
         }
     }
 }

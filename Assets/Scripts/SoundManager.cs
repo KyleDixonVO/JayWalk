@@ -38,15 +38,19 @@ public class SoundManager : MonoBehaviour
         DataManager.dataManager.LoadGlobalData();
         UI_Manager.ui_manager.MusicVolumeSlider.value = DataManager.dataManager.musicVolume;
         UI_Manager.ui_manager.FXVolumeSlider.value = DataManager.dataManager.FXVolume;
-        Debug.Log(DataManager.dataManager.FXVolume + "  " + UI_Manager.ui_manager.FXVolumeSlider.value);
+        //Debug.Log(DataManager.dataManager.FXVolume + "  " + UI_Manager.ui_manager.FXVolumeSlider.value);
 
         moneyAudio.playOnAwake = false;
         damageAudio.playOnAwake = false;
         healAudio.playOnAwake = false;
-        mainMenuMusic.playOnAwake = false;
+        //mainMenuMusic.playOnAwake = false;
         //gameplayMusic.playOnAwake = false;
-        //insufficientFundsAudio.playOnAwake = false;
-        //purchaseAudio.playOnAwake = false;
+        insufficientFundsAudio.playOnAwake = false;
+        purchaseAudio.playOnAwake = false;
+        jumpAudio.playOnAwake = false;
+        landingAudio.playOnAwake = false;
+        menuBackAudio.playOnAwake = false;
+        menuSelectionAudio.playOnAwake = false;
 
         UpdateSoundValues();
     }
@@ -103,14 +107,43 @@ public class SoundManager : MonoBehaviour
         purchaseAudio.Play();
     }
 
+    public void PlayJumpAudio()
+    {
+        if (jumpAudio.isPlaying) return;
+        jumpAudio.Play();
+    }
+
+    public void PlayLandingAudio()
+    {
+        if (landingAudio.isPlaying) return;
+        landingAudio.Play();
+    }
+
+    public void PlayMenuBackAudio()
+    {
+        if (menuBackAudio.isPlaying) return;
+        menuBackAudio.Play();
+    }
+
+    public void PlayMenuSelectionAudio()
+    {
+        if (menuSelectionAudio.isPlaying) return;
+        menuSelectionAudio.Play();
+    }
+
+
     public void UpdateSoundValues()
     {
         moneyAudio.volume = DataManager.dataManager.FXVolume;
         damageAudio.volume = DataManager.dataManager.FXVolume;
         healAudio.volume = DataManager.dataManager.FXVolume;
-        mainMenuMusic.volume = DataManager.dataManager.musicVolume;
-        //gameplayMusic.volume = musicSliderValue;
-        //insufficientFundsAudio.volume = soundEffectsValue;
-        //purchaseAudio.volume = soundEffectsValue;
+        //mainMenuMusic.volume = DataManager.dataManager.musicVolume;
+        //gameplayMusic.volume = DataManager.dataManager.FXVolume;
+        insufficientFundsAudio.volume = DataManager.dataManager.FXVolume;
+        purchaseAudio.volume = DataManager.dataManager.FXVolume;
+        jumpAudio.volume = DataManager.dataManager.FXVolume;
+        landingAudio.volume = DataManager.dataManager.FXVolume;
+        menuBackAudio.volume = DataManager.dataManager.FXVolume;
+        menuSelectionAudio.volume = DataManager.dataManager.FXVolume;
     }
 }

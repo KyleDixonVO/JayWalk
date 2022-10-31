@@ -1431,6 +1431,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   escapePressed: 0
   gameWon: 0
+  wonLevel: 0
   gameLoss: 0
   sceneIndex: 0
 --- !u!4 &132507928
@@ -2336,6 +2337,26 @@ MonoBehaviour:
   completionSlider: {fileID: 0}
   jumpSlider: {fileID: 0}
   HealthFraction: 0
+  totalCurrencyText: {fileID: 0}
+  jumpCooldownText: {fileID: 0}
+  currencyMultiplierText: {fileID: 0}
+  maxHealthText: {fileID: 0}
+  jumpIFramesText: {fileID: 0}
+  wingsText: {fileID: 0}
+  glideTimeText: {fileID: 0}
+  swapSpeedText: {fileID: 0}
+  glideTimeButton: {fileID: 0}
+  glideButtonText: {fileID: 0}
+  laneSwapButton: {fileID: 0}
+  jumpCooldownButton: {fileID: 0}
+  currencyMultiplierButton: {fileID: 0}
+  maxHealthButton: {fileID: 0}
+  jumpIFramesButton: {fileID: 0}
+  wingsButton: {fileID: 0}
+  currentLevelText: {fileID: 0}
+  currencyCollectedText: {fileID: 0}
+  distanceTravelledText: {fileID: 0}
+  timeElapsedText: {fileID: 0}
   gameplayCanvas: {fileID: 900235342}
   gameOverCanvas: {fileID: 997863302}
   pauseCanvas: {fileID: 1919284086}
@@ -2343,6 +2364,19 @@ MonoBehaviour:
   winCanvas: {fileID: 1149274201}
   upgradeCanvas: {fileID: 2111275056}
   mainMenuCanvas: {fileID: 1091389143}
+  openingCutsceneCanvas: {fileID: 0}
+  loadOptionsParent: {fileID: 0}
+  buttonLevelOne: {fileID: 0}
+  buttonLevelTwo: {fileID: 0}
+  buttonLevelThree: {fileID: 0}
+  buttonGoBack: {fileID: 0}
+  loadOptionsOpen: 0
+  MusicVolumeSlider: {fileID: 0}
+  FXVolumeSlider: {fileID: 0}
+  endingCutsceneParent: {fileID: 0}
+  endingCutSceneFrames: []
+  startingCutsceneFrameParent: {fileID: 0}
+  startingCutsceneFrames: []
   state: 0
   returnFromPause: 0
   returnFromOptions: 0
@@ -8718,7 +8752,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b9fa7c459ada84d88dfe163d343aad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volume: 0
+  saving: 0
+  musicVolume: 0
+  FXVolume: 0
 --- !u!4 &1559780123
 Transform:
   m_ObjectHideFlags: 0
@@ -11733,6 +11769,78 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 514669890, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 514669890, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1500
+      objectReference: {fileID: 0}
+    - target: {fileID: 950177801, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 950177801, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1311838829, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1311838829, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1311838830, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7568628
+      objectReference: {fileID: 0}
+    - target: {fileID: 1311838830, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7568628
+      objectReference: {fileID: 0}
+    - target: {fileID: 1311838830, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7843138
+      objectReference: {fileID: 0}
+    - target: {fileID: 1509635282, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1509635282, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970653352, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970653352, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970653353, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7571645
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970653353, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7571645
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970653353, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7830189
+      objectReference: {fileID: 0}
+    - target: {fileID: 4099102940452577685, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: finishLine
+      value: 
+      objectReference: {fileID: 38982990}
+    - target: {fileID: 4099102940452577685, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: TallObstaclePrefab
+      value: 
+      objectReference: {fileID: 8584889157194756992, guid: b6dbbd66fd7b4d041810baeaeae04b67, type: 3}
     - target: {fileID: 4099102940452577686, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
       propertyPath: m_RootOrder
       value: 7
