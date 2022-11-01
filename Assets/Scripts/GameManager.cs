@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     {
         DataManager.dataManager.LoadGlobalData();
         DataManager.dataManager.LoadPlayerData();
+        gameWon = false;
     }
 
     // Update is called once per frame

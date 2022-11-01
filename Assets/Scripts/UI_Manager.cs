@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class UI_Manager : MonoBehaviour
 {
@@ -77,6 +78,15 @@ public class UI_Manager : MonoBehaviour
     public Sprite[] startingCutsceneFrames;
     private int activeStartFrame;
 
+    //Tweening elements
+    public GameObject resultsFadeParent;
+    public GameObject imageLevelComplete;
+    public GameObject imageRunEnded;
+    public Button runEndToUpgrade;
+
+    public GameObject savingObjectParent;
+    public GameObject savingImage;
+
     public static UI_Manager ui_manager;
 
     public enum UI_State
@@ -133,11 +143,6 @@ public class UI_Manager : MonoBehaviour
             GameplayUpdate();
         }
 
-        if (state == UI_State.gameplay && (GameManager.gameManager.gameLoss == true || GameManager.gameManager.wonLevel == true))
-        {
-            state = UI_State.results;
-        }
-
         if (state == UI_State.gameplay && GameManager.gameManager.gameWon == true)
         {
             state = UI_State.win;
@@ -156,6 +161,26 @@ public class UI_Manager : MonoBehaviour
         if (state == UI_State.upgrade)
         {
             UpgradeMenuUpdate();
+        }
+
+        if (state == UI_State.gameplay && (GameManager.gameManager.gameLoss == true || GameManager.gameManager.wonLevel == true))
+        {
+            if (resultsFadeParent.activeInHierarchy == true) return;
+            resultsFadeParent.SetActive(true);
+            FadeInResultsTween();
+        }
+        else
+        {
+            resultsFadeParent.SetActive(false);
+        }
+
+        if (DataManager.dataManager.saving)
+        {
+            savingObjectParent.SetActive(true);
+        }
+        else
+        {
+            savingObjectParent.SetActive(false);
         }
 
         EvaluateSwitch();
@@ -272,7 +297,7 @@ public class UI_Manager : MonoBehaviour
 
         if (UpgradeManager.upgradeManager.currentJumpCoolTier == UpgradeManager.upgradeManager.jumpCooldownTiers.Length - 1)
         {
-            jumpCooldownText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpCoolTier  + 1) +
+            jumpCooldownText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpCoolTier + 1) +
                 " Current value (Seconds): " + UpgradeManager.upgradeManager.jumpCooldownTiers[UpgradeManager.upgradeManager.currentJumpCoolTier] +
                 " Next value (Seconds): MAXED OUT";
             jumpCooldownButton.text = "MAXED OUT";
@@ -288,14 +313,14 @@ public class UI_Manager : MonoBehaviour
 
         if (UpgradeManager.upgradeManager.currentMultiplierTier == UpgradeManager.upgradeManager.currencyMultiplierTiers.Length - 1)
         {
-            currencyMultiplierText.text = "Level: " + (UpgradeManager.upgradeManager.currentMultiplierTier +1) +
+            currencyMultiplierText.text = "Level: " + (UpgradeManager.upgradeManager.currentMultiplierTier + 1) +
                 " Current Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier] +
                 " Next Value: MAXED OUT";
             currencyMultiplierButton.text = "MAXED OUT";
         }
         else
         {
-            currencyMultiplierText.text = "Level: " + (UpgradeManager.upgradeManager.currentMultiplierTier +1) +
+            currencyMultiplierText.text = "Level: " + (UpgradeManager.upgradeManager.currentMultiplierTier + 1) +
                " Current Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier] +
                " Next Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier + 1];
             currencyMultiplierButton.text = UpgradeManager.upgradeManager.currencyMultiplierCosts[UpgradeManager.upgradeManager.currentMultiplierTier + 1] + " SC";
@@ -303,14 +328,14 @@ public class UI_Manager : MonoBehaviour
 
         if (UpgradeManager.upgradeManager.currentMaxHealthTier == UpgradeManager.upgradeManager.maxHealthTiers.Length - 1)
         {
-            maxHealthText.text = "Level: " + (UpgradeManager.upgradeManager.currentMaxHealthTier +1) +
+            maxHealthText.text = "Level: " + (UpgradeManager.upgradeManager.currentMaxHealthTier + 1) +
                 " Current Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier] +
                 " Next Value: MAXED OUT";
             maxHealthButton.text = "MAXED OUT";
         }
         else
         {
-            maxHealthText.text = "Level: " + (UpgradeManager.upgradeManager.currentMaxHealthTier +1) +
+            maxHealthText.text = "Level: " + (UpgradeManager.upgradeManager.currentMaxHealthTier + 1) +
                " Current Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier] +
                " Next Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier + 1];
             maxHealthButton.text = UpgradeManager.upgradeManager.maxHealthCosts[UpgradeManager.upgradeManager.currentMaxHealthTier + 1] + " SC";
@@ -318,14 +343,14 @@ public class UI_Manager : MonoBehaviour
 
         if (UpgradeManager.upgradeManager.currentJumpIFrameTier == UpgradeManager.upgradeManager.jumpIFrameTiers.Length - 1)
         {
-            jumpIFramesText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpIFrameTier +1) +
+            jumpIFramesText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpIFrameTier + 1) +
                 " Current Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier] +
                 " Next Value (Seconds): MAXED OUT";
             jumpIFramesButton.text = "MAXED OUT";
         }
         else
         {
-            jumpIFramesText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpIFrameTier +1) +
+            jumpIFramesText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpIFrameTier + 1) +
                 " Current Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier] +
                 " Next Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier + 1];
             jumpIFramesButton.text = UpgradeManager.upgradeManager.jumpIFrameCosts[UpgradeManager.upgradeManager.currentJumpIFrameTier + 1] + " SC";
@@ -345,7 +370,7 @@ public class UI_Manager : MonoBehaviour
 
         if (UpgradeManager.upgradeManager.currentGlideTier == UpgradeManager.upgradeManager.glideTimeTiers.Length - 1)
         {
-            glideTimeText.text = "Level: " + (UpgradeManager.upgradeManager.currentGlideTier +1) +
+            glideTimeText.text = "Level: " + (UpgradeManager.upgradeManager.currentGlideTier + 1) +
                 " Current Value (Seconds): " + UpgradeManager.upgradeManager.glideTimeTiers[UpgradeManager.upgradeManager.currentGlideTier] +
                 " Next Value (Seconds): MAXED OUT";
             glideButtonText.text = "MAXED OUT";
@@ -360,14 +385,14 @@ public class UI_Manager : MonoBehaviour
 
         if (UpgradeManager.upgradeManager.currentSwapTier == UpgradeManager.upgradeManager.swapSpeedTiers.Length - 1)
         {
-            swapSpeedText.text = "Level: " + (UpgradeManager.upgradeManager.currentSwapTier +1) +
+            swapSpeedText.text = "Level: " + (UpgradeManager.upgradeManager.currentSwapTier + 1) +
                 " Current Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier] +
                 " Next Value (Seconds): MAXED OUT";
             laneSwapButton.text = "MAXED OUT";
         }
         else
         {
-            swapSpeedText.text = "Level: " + (UpgradeManager.upgradeManager.currentSwapTier +1) +
+            swapSpeedText.text = "Level: " + (UpgradeManager.upgradeManager.currentSwapTier + 1) +
                 " Current Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier] +
                 " Next Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier + 1];
             laneSwapButton.text = UpgradeManager.upgradeManager.swapSpeedCosts[UpgradeManager.upgradeManager.currentSwapTier + 1] + " SC";
@@ -429,12 +454,85 @@ public class UI_Manager : MonoBehaviour
     public void UpdateResultsText()
     {
         currentLevelText.text = "Level " + LevelManager.levelManager.activeLevel;
-        currencyCollectedText.text = "Currency Collected: " + PlayerStats.playerStats.currency + " x " + PlayerStats.playerStats.currencyMultiplier + " = " + (int)(PlayerStats.playerStats.currency*PlayerStats.playerStats.currencyMultiplier) + "\r\n Total Currency: " + PlayerStats.playerStats.totalCurrency;
+        currencyCollectedText.text = "Currency Collected: " + PlayerStats.playerStats.currency + " x " + PlayerStats.playerStats.currencyMultiplier + " = " + (int)(PlayerStats.playerStats.currency * PlayerStats.playerStats.currencyMultiplier) + "\r\n Total Currency: " + PlayerStats.playerStats.totalCurrency;
         if (PlayerMovement.playerMovement == null) return;
         distanceTravelledText.text = "Distance Travelled: " + PlayerMovement.playerMovement.gameObject.transform.position.y + " m";
     }
 
-    public void MainMenu()
+
+    //Cutscene methods
+    public void ShowOpeningCutscene()
+    {
+        state = UI_State.cutscene;
+        activeStartFrame = 0;
+        startingCutsceneFrameParent.GetComponent<Image>().sprite = startingCutsceneFrames[activeStartFrame];
+    }
+
+    public void NextEndFrame()
+    {
+        activeEndFrame++;
+
+        if (activeStartFrame == startingCutsceneFrames.Length)
+        {
+
+        }
+        else
+        {
+            endingCutsceneParent.GetComponent<Image>().sprite = endingCutSceneFrames[activeEndFrame];
+        }
+    }
+
+    public void NextStartFrame()
+    {
+        activeStartFrame++;
+        if (activeStartFrame >= startingCutsceneFrames.Length)
+        {
+            PlayerStats.playerStats.FirstRun = false;
+            DataManager.dataManager.SavePlayerData();
+            state = UI_State.mainMenu;
+            openingCutsceneCanvas.gameObject.SetActive(false);
+        }
+        else
+        {
+            startingCutsceneFrameParent.GetComponent<Image>().sprite = startingCutsceneFrames[activeStartFrame];
+        }
+    }
+
+
+    //Tweening methods
+    public void FadeInResultsTween()
+    {
+        if (GameManager.gameManager.wonLevel)
+        {
+            imageLevelComplete.SetActive(true);
+            imageRunEnded.SetActive(false);
+            Color temp = imageLevelComplete.GetComponent<Image>().color;
+            temp.a = 0;
+            imageLevelComplete.GetComponent<Image>().color = temp;
+            StartCoroutine(TweenFade(imageLevelComplete.GetComponent<Image>()));
+        }
+        else if (GameManager.gameManager.gameLoss)
+        {
+            imageLevelComplete.SetActive(false);
+            imageRunEnded.SetActive(true);
+            Color temp = imageRunEnded.GetComponent<Image>().color;
+            temp.a = 0;
+            imageRunEnded.GetComponent<Image>().color = temp;
+            StartCoroutine(TweenFade(imageRunEnded.GetComponent<Image>()));
+        }
+    }
+
+    IEnumerator TweenFade(Image rendererToFade)
+    {
+        Debug.Log("Tweening Fade");
+        Tween fadeIn = rendererToFade.DOFade(1, (float)0.5);
+        yield return fadeIn.WaitForCompletion();
+        Debug.Log("Tween Complete!");
+        runEndToUpgrade.gameObject.SetActive(true);
+    }
+
+//methods to toggle active canvas based on state
+public void MainMenu()
     {
         mainMenuCanvas.enabled = true;
         gameplayCanvas.enabled = false;
@@ -527,40 +625,5 @@ public class UI_Manager : MonoBehaviour
         
     }
 
-    public void ShowOpeningCutscene()
-    {
-        state = UI_State.cutscene;
-        activeStartFrame = 0;
-        startingCutsceneFrameParent.GetComponent<Image>().sprite = startingCutsceneFrames[activeStartFrame];
-    }
 
-    public void NextEndFrame()
-    {
-        activeEndFrame++;
-
-        if (activeStartFrame == startingCutsceneFrames.Length)
-        {
-
-        }
-        else
-        {
-            endingCutsceneParent.GetComponent<Image>().sprite = endingCutSceneFrames[activeEndFrame];
-        }
-    }
-    
-    public void NextStartFrame()
-    {
-        activeStartFrame++;
-        if (activeStartFrame >= startingCutsceneFrames.Length)
-        {
-            PlayerStats.playerStats.FirstRun = false;
-            DataManager.dataManager.SavePlayerData();
-            state = UI_State.mainMenu;
-            openingCutsceneCanvas.gameObject.SetActive(false);
-        }
-        else
-        {
-            startingCutsceneFrameParent.GetComponent<Image>().sprite = startingCutsceneFrames[activeStartFrame];
-        }
-    }
 }
