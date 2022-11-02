@@ -4,6 +4,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class UI_Manager : MonoBehaviour
 {
@@ -20,13 +22,14 @@ public class UI_Manager : MonoBehaviour
 
     //upgrade UI elements
     public TMP_Text totalCurrencyText;
-    public TMP_Text jumpCooldownText;
-    public TMP_Text currencyMultiplierText;
-    public TMP_Text maxHealthText;
-    public TMP_Text jumpIFramesText;
-    public TMP_Text wingsText;
-    public TMP_Text glideTimeText;
-    public TMP_Text swapSpeedText;
+    public TMP_Text upgradePanelText;
+    //public TMP_Text jumpCooldownText;
+    //public TMP_Text currencyMultiplierText;
+    //public TMP_Text maxHealthText;
+    //public TMP_Text jumpIFramesText;
+    //public TMP_Text wingsText;
+    //public TMP_Text glideTimeText;
+    //public TMP_Text swapSpeedText;
     public Button glideTimeButton;
     public TMP_Text glideButtonText;
     public TMP_Text laneSwapButton;
@@ -87,6 +90,9 @@ public class UI_Manager : MonoBehaviour
     public GameObject savingObjectParent;
     public GameObject savingImage;
 
+    //Event elements
+    public GameObject caller;
+
     public static UI_Manager ui_manager;
 
     public enum UI_State
@@ -132,12 +138,14 @@ public class UI_Manager : MonoBehaviour
         glideTimeButton.interactable = false;
         CloseLoadMenu();
         activeEndFrame = 0;
+        Color color = savingImage.GetComponent<Image>().color;
+        color.a = 0;
+        savingImage.GetComponent<Image>().color = color;
     }
 
     // Update is called once per frame
     void Update()
     {
-
         if (state == UI_State.gameplay)
         {
             GameplayUpdate();
@@ -172,15 +180,6 @@ public class UI_Manager : MonoBehaviour
         else
         {
             resultsFadeParent.SetActive(false);
-        }
-
-        if (DataManager.dataManager.saving)
-        {
-            savingObjectParent.SetActive(true);
-        }
-        else
-        {
-            savingObjectParent.SetActive(false);
         }
 
         EvaluateSwitch();
@@ -259,6 +258,8 @@ public class UI_Manager : MonoBehaviour
 
     }
 
+
+    //State toggles to be used with buttons
     public void ReturnFromOptions()
     {
         state = returnFromOptions;
@@ -291,120 +292,201 @@ public class UI_Manager : MonoBehaviour
         state = UI_State.upgrade;
     }
 
+
+    //Unsorted Methods
+
     public void UpgradeMenuUpdate()
     {
         totalCurrencyText.text = "Scum coin (SC): " + PlayerStats.playerStats.totalCurrency.ToString();
 
+        if (UpgradeManager.upgradeManager.currentSwapTier == UpgradeManager.upgradeManager.swapSpeedTiers.Length - 1)
+        {
+            laneSwapButton.text = "MAXED OUT";
+        }
+        else
+        {
+            laneSwapButton.text = UpgradeManager.upgradeManager.swapSpeedCosts[UpgradeManager.upgradeManager.currentSwapTier + 1] + " SC";
+        }
+
         if (UpgradeManager.upgradeManager.currentJumpCoolTier == UpgradeManager.upgradeManager.jumpCooldownTiers.Length - 1)
         {
-            jumpCooldownText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpCoolTier + 1) +
-                " Current value (Seconds): " + UpgradeManager.upgradeManager.jumpCooldownTiers[UpgradeManager.upgradeManager.currentJumpCoolTier] +
-                " Next value (Seconds): MAXED OUT";
             jumpCooldownButton.text = "MAXED OUT";
         }
         else
         {
-            jumpCooldownText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpCoolTier + 1) +
-                " Current value (Seconds): " + UpgradeManager.upgradeManager.jumpCooldownTiers[UpgradeManager.upgradeManager.currentJumpCoolTier] +
-                " Next value (Seconds): " + UpgradeManager.upgradeManager.jumpCooldownTiers[UpgradeManager.upgradeManager.currentJumpCoolTier + 1];
             jumpCooldownButton.text = UpgradeManager.upgradeManager.jumpCooldownCosts[UpgradeManager.upgradeManager.currentJumpCoolTier + 1] + " SC";
-
         }
 
         if (UpgradeManager.upgradeManager.currentMultiplierTier == UpgradeManager.upgradeManager.currencyMultiplierTiers.Length - 1)
         {
-            currencyMultiplierText.text = "Level: " + (UpgradeManager.upgradeManager.currentMultiplierTier + 1) +
-                " Current Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier] +
-                " Next Value: MAXED OUT";
             currencyMultiplierButton.text = "MAXED OUT";
         }
         else
         {
-            currencyMultiplierText.text = "Level: " + (UpgradeManager.upgradeManager.currentMultiplierTier + 1) +
-               " Current Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier] +
-               " Next Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier + 1];
             currencyMultiplierButton.text = UpgradeManager.upgradeManager.currencyMultiplierCosts[UpgradeManager.upgradeManager.currentMultiplierTier + 1] + " SC";
         }
 
         if (UpgradeManager.upgradeManager.currentMaxHealthTier == UpgradeManager.upgradeManager.maxHealthTiers.Length - 1)
         {
-            maxHealthText.text = "Level: " + (UpgradeManager.upgradeManager.currentMaxHealthTier + 1) +
-                " Current Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier] +
-                " Next Value: MAXED OUT";
             maxHealthButton.text = "MAXED OUT";
         }
         else
         {
-            maxHealthText.text = "Level: " + (UpgradeManager.upgradeManager.currentMaxHealthTier + 1) +
-               " Current Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier] +
-               " Next Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier + 1];
             maxHealthButton.text = UpgradeManager.upgradeManager.maxHealthCosts[UpgradeManager.upgradeManager.currentMaxHealthTier + 1] + " SC";
         }
 
         if (UpgradeManager.upgradeManager.currentJumpIFrameTier == UpgradeManager.upgradeManager.jumpIFrameTiers.Length - 1)
         {
-            jumpIFramesText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpIFrameTier + 1) +
-                " Current Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier] +
-                " Next Value (Seconds): MAXED OUT";
             jumpIFramesButton.text = "MAXED OUT";
         }
         else
         {
-            jumpIFramesText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpIFrameTier + 1) +
-                " Current Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier] +
-                " Next Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier + 1];
             jumpIFramesButton.text = UpgradeManager.upgradeManager.jumpIFrameCosts[UpgradeManager.upgradeManager.currentJumpIFrameTier + 1] + " SC";
         }
 
         if (UpgradeManager.upgradeManager.currentWingEnabledTier == UpgradeManager.upgradeManager.wingsEnabledTiers.Length - 1)
         {
-            wingsText.text = "Wings Acquired: " + PlayerStats.playerStats.wingsEnabled;
             wingsButton.text = "MAXED OUT";
             glideTimeButton.interactable = true;
         }
         else
         {
-            wingsText.text = "Wings Acquired: " + PlayerStats.playerStats.wingsEnabled;
             wingsButton.text = UpgradeManager.upgradeManager.wingsEnabledCosts[UpgradeManager.upgradeManager.currentWingEnabledTier + 1] + " SC";
         }
 
         if (UpgradeManager.upgradeManager.currentGlideTier == UpgradeManager.upgradeManager.glideTimeTiers.Length - 1)
         {
-            glideTimeText.text = "Level: " + (UpgradeManager.upgradeManager.currentGlideTier + 1) +
-                " Current Value (Seconds): " + UpgradeManager.upgradeManager.glideTimeTiers[UpgradeManager.upgradeManager.currentGlideTier] +
-                " Next Value (Seconds): MAXED OUT";
             glideButtonText.text = "MAXED OUT";
         }
         else
         {
-            glideTimeText.text = "Level: " + (UpgradeManager.upgradeManager.currentGlideTier + 1) +
-                " Current Value (Seconds): " + UpgradeManager.upgradeManager.glideTimeTiers[UpgradeManager.upgradeManager.currentGlideTier] +
-                " Next Value (Seconds): " + UpgradeManager.upgradeManager.glideTimeTiers[UpgradeManager.upgradeManager.currentGlideTier + 1];
             glideButtonText.text = UpgradeManager.upgradeManager.glideTimeCosts[UpgradeManager.upgradeManager.currentGlideTier + 1] + " SC";
         }
 
-        if (UpgradeManager.upgradeManager.currentSwapTier == UpgradeManager.upgradeManager.swapSpeedTiers.Length - 1)
+        if (caller == null) return;
+        switch (caller.name)
         {
-            swapSpeedText.text = "Level: " + (UpgradeManager.upgradeManager.currentSwapTier + 1) +
-                " Current Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier] +
-                " Next Value (Seconds): MAXED OUT";
-            laneSwapButton.text = "MAXED OUT";
+            case null:
+                upgradePanelText.text = "No upgrade selected";
+                break;
+
+            case "button - LaneSwapSpeed":
+                if (UpgradeManager.upgradeManager.currentSwapTier == UpgradeManager.upgradeManager.swapSpeedTiers.Length - 1)
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentSwapTier + 1) +
+                        "\r\n Current Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier] +
+                        "\r\n Next Value (Seconds): MAXED OUT";
+                    laneSwapButton.text = "MAXED OUT";
+                }
+                else
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentSwapTier + 1) +
+                        "\r\n Current Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier] +
+                        "\r\n Next Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier + 1];
+                    laneSwapButton.text = UpgradeManager.upgradeManager.swapSpeedCosts[UpgradeManager.upgradeManager.currentSwapTier + 1] + " SC";
+                }
+                break;
+
+            case "button - JumpCooldown":
+                if (UpgradeManager.upgradeManager.currentJumpCoolTier == UpgradeManager.upgradeManager.jumpCooldownTiers.Length - 1)
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpCoolTier + 1) +
+                        "\r\n Current value (Seconds): " + UpgradeManager.upgradeManager.jumpCooldownTiers[UpgradeManager.upgradeManager.currentJumpCoolTier] +
+                        "\r\n Next value (Seconds): MAXED OUT";
+                    jumpCooldownButton.text = "MAXED OUT";
+                }
+                else
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpCoolTier + 1) +
+                        "\r\n Current value (Seconds): " + UpgradeManager.upgradeManager.jumpCooldownTiers[UpgradeManager.upgradeManager.currentJumpCoolTier] +
+                        "\r\n Next value (Seconds): " + UpgradeManager.upgradeManager.jumpCooldownTiers[UpgradeManager.upgradeManager.currentJumpCoolTier + 1];
+                    jumpCooldownButton.text = UpgradeManager.upgradeManager.jumpCooldownCosts[UpgradeManager.upgradeManager.currentJumpCoolTier + 1] + " SC";
+
+                }
+                break;
+
+            case "button - CurrencyMultiplier":
+                if (UpgradeManager.upgradeManager.currentMultiplierTier == UpgradeManager.upgradeManager.currencyMultiplierTiers.Length - 1)
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentMultiplierTier + 1) +
+                        "\r\n Current Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier] +
+                        "\r\n Next Value: MAXED OUT";
+                    currencyMultiplierButton.text = "MAXED OUT";
+                }
+                else
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentMultiplierTier + 1) +
+                       "\r\n Current Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier] +
+                       "\r\n Next Value: " + UpgradeManager.upgradeManager.currencyMultiplierTiers[UpgradeManager.upgradeManager.currentMultiplierTier + 1];
+                    currencyMultiplierButton.text = UpgradeManager.upgradeManager.currencyMultiplierCosts[UpgradeManager.upgradeManager.currentMultiplierTier + 1] + " SC";
+                }
+                break;
+
+            case "button - MaxHealth":
+                if (UpgradeManager.upgradeManager.currentMaxHealthTier == UpgradeManager.upgradeManager.maxHealthTiers.Length - 1)
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentMaxHealthTier + 1) +
+                        "\r\n Current Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier] +
+                        "\r\n Next Value: MAXED OUT";
+                    maxHealthButton.text = "MAXED OUT";
+                }
+                else
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentMaxHealthTier + 1) +
+                       "\r\n Current Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier] +
+                       "\r\n Next Value: " + UpgradeManager.upgradeManager.maxHealthTiers[UpgradeManager.upgradeManager.currentMaxHealthTier + 1];
+                    maxHealthButton.text = UpgradeManager.upgradeManager.maxHealthCosts[UpgradeManager.upgradeManager.currentMaxHealthTier + 1] + " SC";
+                }
+                break;
+
+            case "button - JumpIFrames":
+                if (UpgradeManager.upgradeManager.currentJumpIFrameTier == UpgradeManager.upgradeManager.jumpIFrameTiers.Length - 1)
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpIFrameTier + 1) +
+                        "\r\n Current Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier] +
+                        "\r\n Next Value (Seconds): MAXED OUT";
+                    jumpIFramesButton.text = "MAXED OUT";
+                }
+                else
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentJumpIFrameTier + 1) +
+                        "\r\n Current Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier] +
+                        "\r\n Next Value (Seconds): " + UpgradeManager.upgradeManager.jumpIFrameTiers[UpgradeManager.upgradeManager.currentJumpIFrameTier + 1];
+                    jumpIFramesButton.text = UpgradeManager.upgradeManager.jumpIFrameCosts[UpgradeManager.upgradeManager.currentJumpIFrameTier + 1] + " SC";
+                }
+                break;
+
+            case "button - Wings":
+                if (UpgradeManager.upgradeManager.currentWingEnabledTier == UpgradeManager.upgradeManager.wingsEnabledTiers.Length - 1)
+                {
+                    upgradePanelText.text = "Wings Acquired: " + PlayerStats.playerStats.wingsEnabled;
+                    wingsButton.text = "MAXED OUT";
+                    glideTimeButton.interactable = true;
+                }
+                else
+                {
+                    upgradePanelText.text = "Wings Acquired: " + PlayerStats.playerStats.wingsEnabled;
+                    wingsButton.text = UpgradeManager.upgradeManager.wingsEnabledCosts[UpgradeManager.upgradeManager.currentWingEnabledTier + 1] + " SC";
+                }
+                break;
+
+            case "button - GlideTime":
+                if (UpgradeManager.upgradeManager.currentGlideTier == UpgradeManager.upgradeManager.glideTimeTiers.Length - 1)
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentGlideTier + 1) +
+                        "\r\n Current Value (Seconds): " + UpgradeManager.upgradeManager.glideTimeTiers[UpgradeManager.upgradeManager.currentGlideTier] +
+                        "\r\n Next Value (Seconds): MAXED OUT";
+                    glideButtonText.text = "MAXED OUT";
+                }
+                else
+                {
+                    upgradePanelText.text = "Level: " + (UpgradeManager.upgradeManager.currentGlideTier + 1) +
+                        "\r\n Current Value (Seconds): " + UpgradeManager.upgradeManager.glideTimeTiers[UpgradeManager.upgradeManager.currentGlideTier] +
+                        "\r\n Next Value (Seconds): " + UpgradeManager.upgradeManager.glideTimeTiers[UpgradeManager.upgradeManager.currentGlideTier + 1];
+                    glideButtonText.text = UpgradeManager.upgradeManager.glideTimeCosts[UpgradeManager.upgradeManager.currentGlideTier + 1] + " SC";
+                }
+                break;
         }
-        else
-        {
-            swapSpeedText.text = "Level: " + (UpgradeManager.upgradeManager.currentSwapTier + 1) +
-                " Current Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier] +
-                " Next Value (Seconds): " + UpgradeManager.upgradeManager.swapSpeedTiers[UpgradeManager.upgradeManager.currentSwapTier + 1];
-            laneSwapButton.text = UpgradeManager.upgradeManager.swapSpeedCosts[UpgradeManager.upgradeManager.currentSwapTier + 1] + " SC";
-        }
-
-
-
-
-
-
-
-
 
     }
 
@@ -531,8 +613,21 @@ public class UI_Manager : MonoBehaviour
         runEndToUpgrade.gameObject.SetActive(true);
     }
 
-//methods to toggle active canvas based on state
-public void MainMenu()
+    public void ShowSaveIndicator()
+    {
+        Debug.Log("Save fade in");
+        StartCoroutine(SaveImageFade());
+    }
+
+    IEnumerator SaveImageFade()
+    {
+        savingImage.GetComponent<Image>().DOFade(1, 1f).SetLoops(2, LoopType.Yoyo);
+        yield return null;
+    }
+
+
+    //methods to toggle active canvas based on state
+    public void MainMenu()
     {
         mainMenuCanvas.enabled = true;
         gameplayCanvas.enabled = false;
@@ -624,6 +719,4 @@ public void MainMenu()
         openingCutsceneCanvas.enabled = true;
         
     }
-
-
 }

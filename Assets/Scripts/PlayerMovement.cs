@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -232,9 +233,12 @@ public class PlayerMovement : MonoBehaviour
         while(normalizedTime <= 1f)
         {
             normalizedTime += Time.deltaTime / timer;
+            gameObject.GetComponent<SpriteRenderer>().DOColor(Color.red, 0.1f);
             //Debug.Log(normalizedTime);
             yield return null;
         }
+
+        gameObject.GetComponent<SpriteRenderer>().DOColor(Color.white, 0.1f);
         PlayerStats.playerStats.invincible = false;
         runningIFrames = false;
     }

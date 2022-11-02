@@ -102,6 +102,7 @@ public class DataManager : MonoBehaviour
         BinaryFormatter binaryFormatter = new BinaryFormatter();
         FileStream playerFile = File.Create(Application.persistentDataPath + "/playerData.dat");
         saving = true;
+        UI_Manager.ui_manager.ShowSaveIndicator();
         PlayerData playerData = new PlayerData();
 
         playerData.maxHealth = PlayerStats.playerStats.maxHealth;
