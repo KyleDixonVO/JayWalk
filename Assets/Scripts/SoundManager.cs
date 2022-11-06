@@ -16,6 +16,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource gameplayMusic;
     public AudioSource insufficientFundsAudio;
     public AudioSource purchaseAudio;
+    public AudioSource gemAudio;
     public static SoundManager soundManager;
 
     void Awake()
@@ -51,6 +52,7 @@ public class SoundManager : MonoBehaviour
         landingAudio.playOnAwake = false;
         menuBackAudio.playOnAwake = false;
         menuSelectionAudio.playOnAwake = false;
+        //gemAudio.playOnAwake = false;
 
         UpdateSoundValues();
     }
@@ -131,6 +133,12 @@ public class SoundManager : MonoBehaviour
         menuSelectionAudio.Play();
     }
 
+    public void PlayGemAudio()
+    {
+        if (gemAudio.isPlaying) return;
+        gemAudio.Play();
+    }
+
 
     public void UpdateSoundValues()
     {
@@ -145,5 +153,6 @@ public class SoundManager : MonoBehaviour
         landingAudio.volume = DataManager.dataManager.FXVolume;
         menuBackAudio.volume = DataManager.dataManager.FXVolume;
         menuSelectionAudio.volume = DataManager.dataManager.FXVolume;
+        //gemAudio.volume = DataManager.dataManager.FXVolume;
     }
 }

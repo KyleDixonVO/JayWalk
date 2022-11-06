@@ -59,6 +59,7 @@ public class PlayerStats : MonoBehaviour
         if (health == 0)
         {
             isAlive = false;
+            Debug.Log(isAlive);
         }
     }
 

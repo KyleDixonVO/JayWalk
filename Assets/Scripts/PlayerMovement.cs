@@ -53,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        AnimatePlayer();
         //Debug.Log("Swap Speed Tier: " + PlayerStats.playerStats.laneSwapSpeed);
         if (UI_Manager.ui_manager.state != UI_Manager.UI_State.gameplay) return;
 
@@ -140,6 +142,7 @@ public class PlayerMovement : MonoBehaviour
 
         JumpCooldown(PlayerStats.playerStats.jumpCooldown);
         JumpingIFrames(PlayerStats.playerStats.jumpIFrames);
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -189,7 +192,13 @@ public class PlayerMovement : MonoBehaviour
         {
             PlayerStats.playerStats.IncreaseMoney(1);
             SoundManager.soundManager.PlayMoneyAudio();
-            collision.gameObject.SetActive(false);
+            UI_Manager.ui_manager.AddToLerpList(collision.gameObject);
+        }
+        else if (collision.gameObject.CompareTag("Gem"))
+        {
+            PlayerStats.playerStats.IncreaseMoney(5);
+            SoundManager.soundManager.PlayGemAudio();
+            UI_Manager.ui_manager.AddToLerpList(collision.gameObject);
         }
     }
 

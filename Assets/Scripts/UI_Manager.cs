@@ -19,17 +19,12 @@ public class UI_Manager : MonoBehaviour
     public Slider completionSlider;
     public Slider jumpSlider;
     public float HealthFraction;
+    public GameObject coinLerpEndpoint;
+    public List<GameObject> coinLerpList;
 
     //upgrade UI elements
     public TMP_Text totalCurrencyText;
     public TMP_Text upgradePanelText;
-    //public TMP_Text jumpCooldownText;
-    //public TMP_Text currencyMultiplierText;
-    //public TMP_Text maxHealthText;
-    //public TMP_Text jumpIFramesText;
-    //public TMP_Text wingsText;
-    //public TMP_Text glideTimeText;
-    //public TMP_Text swapSpeedText;
     public Button glideTimeButton;
     public TMP_Text glideButtonText;
     public TMP_Text laneSwapButton;
@@ -127,6 +122,7 @@ public class UI_Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        coinLerpList = new List<GameObject>();
         CurrencyText = GameObject.Find("CurrencyText").GetComponent<TMP_Text>();
         HealthText = GameObject.Find("HealthText").GetComponent<TMP_Text>();
         CompletionText = GameObject.Find("CompletionText").GetComponent<TMP_Text>();
@@ -149,6 +145,7 @@ public class UI_Manager : MonoBehaviour
         if (state == UI_State.gameplay)
         {
             GameplayUpdate();
+            LerpCurrency();
         }
 
         if (state == UI_State.gameplay && GameManager.gameManager.gameWon == true)
@@ -539,6 +536,23 @@ public class UI_Manager : MonoBehaviour
         currencyCollectedText.text = "Currency Collected: " + PlayerStats.playerStats.currency + " x " + PlayerStats.playerStats.currencyMultiplier + " = " + (int)(PlayerStats.playerStats.currency * PlayerStats.playerStats.currencyMultiplier) + "\r\n Total Currency: " + PlayerStats.playerStats.totalCurrency;
         if (PlayerMovement.playerMovement == null) return;
         distanceTravelledText.text = "Distance Travelled: " + PlayerMovement.playerMovement.gameObject.transform.position.y + " m";
+    }
+
+    public void LerpCurrency()
+    {
+        foreach (GameObject currency in coinLerpList)
+        {
+            currency.transform.position = Vector2.MoveTowards(currency.transform.position, coinLerpEndpoint.transform.position, 0.1f);
+            if (Vector2.Distance(currency.transform.position, coinLerpEndpoint.transform.position) < 0.5f)
+            {
+                currency.SetActive(false);
+            }
+        }
+    }
+
+    public void AddToLerpList(GameObject gameObject)
+    {
+        coinLerpList.Add(gameObject);
     }
 
 

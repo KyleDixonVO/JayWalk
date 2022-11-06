@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public bool wonLevel = false;
     public bool gameLoss = false;
     public int sceneIndex;
+    public Camera mainCam;
 
     //SoundManager soundManager = new SoundManager();
     public static GameManager gameManager;
