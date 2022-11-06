@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 GameObjectPosition;
     public GameObject wingsObject;
     public static PlayerMovement playerMovement;
+    public Animator PlayerAnim;
 
     void Awake()
     {
@@ -41,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         // starts player in middle lane
+        PlayerAnim = gameObject.GetComponent<Animator>();
         lane = 2;
         elapsedTime = PlayerStats.playerStats.jumpCooldown;
         laneSwapTimer = 0;
@@ -252,9 +254,14 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (elapsedJumpIFrameTime < timer)
         {
+            if (!PlayerStats.playerStats.isJumping)
+            {
+                gameObject.GetComponent<SpriteRenderer>().DOColor(Color.grey, 0.1f);
+            }
             PlayerStats.playerStats.isJumping = true;
             runningJumpIFrames = true;
             elapsedJumpIFrameTime += Time.deltaTime;
+            
             //Debug.Log(elapsedJumpIFrameTime);
         }
 
@@ -264,6 +271,7 @@ public class PlayerMovement : MonoBehaviour
             PlayerStats.playerStats.isJumping = false;
             runningJumpIFrames = false;
             SoundManager.soundManager.PlayLandingAudio();
+            gameObject.GetComponent<SpriteRenderer>().DOColor(Color.white, 0.1f);
         }
     }
 
@@ -290,5 +298,13 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
+    }
+
+    public void AnimatePlayer()
+    {
+        PlayerAnim.SetFloat("Speed", this.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude);
+        PlayerAnim.SetFloat("Hangtime", elapsedJumpIFrameTime);
+        PlayerAnim.SetBool("IsJumping", PlayerStats.playerStats.isJumping);
+        PlayerAnim.SetBool("IsAlive", PlayerStats.playerStats.isAlive);
     }
 }

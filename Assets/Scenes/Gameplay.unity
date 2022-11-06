@@ -2338,13 +2338,7 @@ MonoBehaviour:
   jumpSlider: {fileID: 0}
   HealthFraction: 0
   totalCurrencyText: {fileID: 0}
-  jumpCooldownText: {fileID: 0}
-  currencyMultiplierText: {fileID: 0}
-  maxHealthText: {fileID: 0}
-  jumpIFramesText: {fileID: 0}
-  wingsText: {fileID: 0}
-  glideTimeText: {fileID: 0}
-  swapSpeedText: {fileID: 0}
+  upgradePanelText: {fileID: 0}
   glideTimeButton: {fileID: 0}
   glideButtonText: {fileID: 0}
   laneSwapButton: {fileID: 0}
@@ -2377,6 +2371,13 @@ MonoBehaviour:
   endingCutSceneFrames: []
   startingCutsceneFrameParent: {fileID: 0}
   startingCutsceneFrames: []
+  resultsFadeParent: {fileID: 0}
+  imageLevelComplete: {fileID: 0}
+  imageRunEnded: {fileID: 0}
+  runEndToUpgrade: {fileID: 0}
+  savingObjectParent: {fileID: 0}
+  savingImage: {fileID: 0}
+  caller: {fileID: 0}
   state: 0
   returnFromPause: 0
   returnFromOptions: 0
@@ -4457,6 +4458,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5051182585386555977, guid: 82ab6fd763d364c4a9359f01a01deede, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 7e4ce91703c057d4ca5152cf3a17185c, type: 3}
     - target: {fileID: 5051182585386555978, guid: 82ab6fd763d364c4a9359f01a01deede, type: 3}
       propertyPath: wingsObject
       value: 
@@ -4467,7 +4472,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7568853276714131319, guid: 82ab6fd763d364c4a9359f01a01deede, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.3
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82ab6fd763d364c4a9359f01a01deede, type: 3}
