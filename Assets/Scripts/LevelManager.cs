@@ -45,7 +45,7 @@ public class LevelManager : MonoBehaviour
         activeLevel++;
         if (activeLevel > numberOfLevels)
         {
-            activeLevel = numberOfLevels;
+            activeLevel = 1;
             finalLevelComplete = true;
         }
     }

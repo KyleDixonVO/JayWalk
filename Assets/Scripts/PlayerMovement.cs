@@ -6,7 +6,7 @@ using DG.Tweening;
 public class PlayerMovement : MonoBehaviour
 {
     float maxSpeed = 15.0f;
-    float acceleration = 0.01f;
+    float acceleration = 0.03f;
     public float currentSpeed;
     public float elapsedTime = 0;
     public float elapsedJumpIFrameTime;
@@ -16,7 +16,6 @@ public class PlayerMovement : MonoBehaviour
     private bool runningIFrames;
     private bool runningJumpCooldown;
     private bool runningJumpIFrames;
-    private bool runningGlideIFrames;
     private bool gliding;
     public float laneSwapTimer;
     public Vector2 Endpoint;
@@ -73,16 +72,16 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            // accelerate until player hits max speed -- slow on collision with obstacle
             this.gameObject.GetComponent<Rigidbody2D>().velocity += Vector2.up * acceleration;
         }
 
         currentSpeed = this.gameObject.GetComponent<Rigidbody2D>().velocity.y;
 
         Endpoint = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
-        //this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
         this.gameObject.transform.position = Vector2.MoveTowards(transform.position, Endpoint, PlayerStats.playerStats.laneSwapSpeed * Time.deltaTime * 7);
 
-        // accelerate until player hits max speed -- slow on collision with obstacle
+        
         // check left/right input -- change lane based on input. Input does not loop around pac-man style
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -166,6 +165,22 @@ public class PlayerMovement : MonoBehaviour
             this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1);
             collision.gameObject.SetActive(false);
         }
+        else if (collision.gameObject.CompareTag("StageObstacle"))
+        {
+            if (PlayerStats.playerStats.isJumping || gliding) return;
+            if (!PlayerStats.playerStats.invincible)
+            {
+                PlayerStats.playerStats.TakeDamage(1);
+                SoundManager.soundManager.PlayDamageAudio();
+            }
+
+            if (!runningIFrames)
+            {
+                StartCoroutine(IFrames(PlayerStats.playerStats.invincibilityTime));
+            }
+
+            this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1);
+        }
         else if (collision.gameObject.CompareTag("TallObstacle"))
         {
             if (!PlayerStats.playerStats.invincible)
@@ -208,7 +223,8 @@ public class PlayerMovement : MonoBehaviour
         lane = 2;
         this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, 0);
         atEndOfLevel = false;
-        
+        gliding = false;
+        elapsedGlideTime = 0;
     }
 
     public void JumpCooldown(float timer)

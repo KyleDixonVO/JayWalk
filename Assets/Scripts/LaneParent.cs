@@ -11,6 +11,7 @@ public class LaneParent : MonoBehaviour
     public GameObject ObstaclePrefab;
     public GameObject TallObstaclePrefab;
     public GameObject CurrencyPrefab;
+    public GameObject GemPrefab;
     public GameObject HealthUpPrefab;
     public GameObject finishLine;
     public float minObstacleSpacing = 8.0f;
@@ -18,7 +19,7 @@ public class LaneParent : MonoBehaviour
     public int rngMax = 20;
     public int rngMin = 0;
     private float _levelLength;
-    private float defaultLength = 1000;
+    private float defaultLength = 750;
     private float defaultMinObstacleSpacing = 8.0f;
     private float defaultMaxObstacleSpacing = 20.0f;
     private int defaultRngMax = 20;
@@ -91,7 +92,14 @@ public class LaneParent : MonoBehaviour
                             temp.transform.position = new Vector2(lane[i].transform.position.x, generationDistance);
                             obstacleLists[i, j] = temp;
                         }
-                        else if (nextObject > rngMax - 5)
+                        else if (nextObject >= rngMax - 2)
+                        {
+                            // spawn a new gem item
+                            GameObject temp = Instantiate(GemPrefab, lane[i].transform);
+                            temp.transform.position = new Vector2(lane[i].transform.position.x, generationDistance);
+                            obstacleLists[i, j] = temp;
+                        }
+                        else if (nextObject > rngMax - 6)
                         {
                             // spawn a new currency item
 
@@ -129,7 +137,7 @@ public class LaneParent : MonoBehaviour
         switch (LevelManager.levelManager.activeLevel)
         {
             case 1:
-                _levelLength = LevelManager.levelManager.activeLevel * defaultLength;
+                _levelLength = 750;
                 minObstacleSpacing = defaultMinObstacleSpacing;
                 maxObstacleSpacing = defaultMaxObstacleSpacing;
                 rngMax = defaultRngMax;
@@ -137,7 +145,7 @@ public class LaneParent : MonoBehaviour
                 break;
 
             case 2:
-                _levelLength = LevelManager.levelManager.activeLevel * defaultLength;
+                _levelLength = 1000;
                 minObstacleSpacing = defaultMinObstacleSpacing - 2;
                 maxObstacleSpacing = defaultMaxObstacleSpacing - 4;
                 rngMax = defaultRngMax + 1;
@@ -145,7 +153,7 @@ public class LaneParent : MonoBehaviour
                 break;
 
             case 3:
-                _levelLength = LevelManager.levelManager.activeLevel * defaultLength;
+                _levelLength = 1250;
                 minObstacleSpacing = defaultMinObstacleSpacing - 3;
                 maxObstacleSpacing = defaultMaxObstacleSpacing - 6;
                 rngMax = defaultRngMax + 2;

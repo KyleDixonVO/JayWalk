@@ -1434,6 +1434,7 @@ MonoBehaviour:
   wonLevel: 0
   gameLoss: 0
   sceneIndex: 0
+  mainCam: {fileID: 0}
 --- !u!4 &132507928
 Transform:
   m_ObjectHideFlags: 0
@@ -2337,6 +2338,8 @@ MonoBehaviour:
   completionSlider: {fileID: 0}
   jumpSlider: {fileID: 0}
   HealthFraction: 0
+  coinLerpEndpoint: {fileID: 0}
+  coinLerpList: []
   totalCurrencyText: {fileID: 0}
   upgradePanelText: {fileID: 0}
   glideTimeButton: {fileID: 0}
@@ -11911,6 +11914,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.7830189
       objectReference: {fileID: 0}
+    - target: {fileID: 4099102940452577685, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: GemPrefab
+      value: 
+      objectReference: {fileID: 3275817334572146628, guid: 8c70b235a7b6f6542a2fff281a107fc6, type: 3}
     - target: {fileID: 4099102940452577685, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
       propertyPath: finishLine
       value: 

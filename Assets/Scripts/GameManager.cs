@@ -40,6 +40,25 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (UI_Manager.ui_manager.state == UI_Manager.UI_State.gameplay)
+        {
+            SoundManager.soundManager.PlayGameplayMusic();
+            Debug.Log("Playing Gameplay Music");
+        }
+        else if (UI_Manager.ui_manager.state == UI_Manager.UI_State.mainMenu)
+        {
+            SoundManager.soundManager.PlayMainMenuMusic();
+            Debug.Log("Playing Main Menu Music");
+        }
+        else if (UI_Manager.ui_manager.state == UI_Manager.UI_State.paused)
+        {
+            SoundManager.soundManager.gameplayMusic.Pause();
+        }
+        else
+        {
+            SoundManager.soundManager.StopMusic();
+        }
+
         DevDebugInputs();
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -67,12 +86,20 @@ public class GameManager : MonoBehaviour
             PlayerStats.playerStats.UpdateTotalCurrency();
         }
 
+        if (LevelManager.levelManager.finalLevelComplete)
+        {
+            gameWon = true;
+        }
+        else if (LevelManager.levelManager.finalLevelComplete == false && UI_Manager.ui_manager.state != UI_Manager.UI_State.win)
+        {
+            gameWon = false;
+        }
     }
 
     public void ResetRun()
     {
         PlayerStats.playerStats.Reset();
-
+        UI_Manager.ui_manager.ResetLerpList();
 
         gameLoss = false;
         gameWon = false;
@@ -159,7 +186,7 @@ public class GameManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.V))
             {
-                gameWon = true;
+                PlayerMovement.playerMovement.gameObject.transform.position = LaneParent.laneParent.finishLine.transform.position;
             }
         }
     }

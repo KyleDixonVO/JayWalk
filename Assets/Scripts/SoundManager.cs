@@ -8,7 +8,6 @@ public class SoundManager : MonoBehaviour
     public AudioSource damageAudio;
     public AudioSource healAudio;
     public AudioSource jumpAudio;
-    public AudioSource glideAudio;
     public AudioSource landingAudio;
     public AudioSource menuBackAudio;
     public AudioSource menuSelectionAudio;
@@ -44,15 +43,15 @@ public class SoundManager : MonoBehaviour
         moneyAudio.playOnAwake = false;
         damageAudio.playOnAwake = false;
         healAudio.playOnAwake = false;
-        //mainMenuMusic.playOnAwake = false;
-        //gameplayMusic.playOnAwake = false;
+        mainMenuMusic.playOnAwake = false;
+        gameplayMusic.playOnAwake = false;
         insufficientFundsAudio.playOnAwake = false;
         purchaseAudio.playOnAwake = false;
         jumpAudio.playOnAwake = false;
         landingAudio.playOnAwake = false;
         menuBackAudio.playOnAwake = false;
         menuSelectionAudio.playOnAwake = false;
-        //gemAudio.playOnAwake = false;
+        gemAudio.playOnAwake = false;
 
         UpdateSoundValues();
     }
@@ -89,12 +88,14 @@ public class SoundManager : MonoBehaviour
     {
         if (mainMenuMusic.isPlaying) return;
         mainMenuMusic.Play();
+        gameplayMusic.Stop();
     }
 
     public void PlayGameplayMusic()
     {
         if (gameplayMusic.isPlaying) return;
         gameplayMusic.Play();
+        mainMenuMusic.Stop();
     }
 
     public void PlayInsufficientFundsAudio()
@@ -139,20 +140,26 @@ public class SoundManager : MonoBehaviour
         gemAudio.Play();
     }
 
+    public void StopMusic()
+    {
+        gameplayMusic.Stop();
+        mainMenuMusic.Stop();
+    }
+
 
     public void UpdateSoundValues()
     {
         moneyAudio.volume = DataManager.dataManager.FXVolume;
         damageAudio.volume = DataManager.dataManager.FXVolume;
         healAudio.volume = DataManager.dataManager.FXVolume;
-        //mainMenuMusic.volume = DataManager.dataManager.musicVolume;
-        //gameplayMusic.volume = DataManager.dataManager.FXVolume;
+        mainMenuMusic.volume = DataManager.dataManager.musicVolume;
+        gameplayMusic.volume = DataManager.dataManager.FXVolume;
         insufficientFundsAudio.volume = DataManager.dataManager.FXVolume;
         purchaseAudio.volume = DataManager.dataManager.FXVolume;
         jumpAudio.volume = DataManager.dataManager.FXVolume;
         landingAudio.volume = DataManager.dataManager.FXVolume;
         menuBackAudio.volume = DataManager.dataManager.FXVolume;
         menuSelectionAudio.volume = DataManager.dataManager.FXVolume;
-        //gemAudio.volume = DataManager.dataManager.FXVolume;
+        gemAudio.volume = DataManager.dataManager.FXVolume;
     }
 }

@@ -68,13 +68,13 @@ public class UI_Manager : MonoBehaviour
     //End cutscene elements
     public GameObject endingCutsceneParent;
     public Sprite[] endingCutSceneFrames;
-    private int activeEndFrame;
+    public int activeEndFrame;
 
 
     //Starting cutscene elements
     public GameObject startingCutsceneFrameParent;
     public Sprite[] startingCutsceneFrames;
-    private int activeStartFrame;
+    public int activeStartFrame;
 
     //Tweening elements
     public GameObject resultsFadeParent;
@@ -151,6 +151,11 @@ public class UI_Manager : MonoBehaviour
         if (state == UI_State.gameplay && GameManager.gameManager.gameWon == true)
         {
             state = UI_State.win;
+
+            if (activeEndFrame == 0)
+            {
+                endingCutsceneParent.GetComponent<Image>().sprite = endingCutSceneFrames[activeEndFrame];
+            }
         }
 
         if (state == UI_State.gameplay && GameManager.gameManager.escapePressed)
@@ -218,6 +223,10 @@ public class UI_Manager : MonoBehaviour
 
             case UI_State.gameplay:
                 Gameplay();
+                if (coinLerpEndpoint == null)
+                {
+                    coinLerpEndpoint = GameObject.Find("coinLerpEndpoint");
+                }
                 Time.timeScale = 1;
                 break;
 
@@ -243,6 +252,7 @@ public class UI_Manager : MonoBehaviour
 
             case UI_State.results:
                 Time.timeScale = 0;
+                activeEndFrame = 0;
                 Gameover();
                 UpdateResultsText();
                 break;
@@ -287,6 +297,11 @@ public class UI_Manager : MonoBehaviour
     public void SwitchUpgrade()
     {
         state = UI_State.upgrade;
+    }
+
+    public void SwitchResults()
+    {
+        state = UI_State.results;
     }
 
 
@@ -542,7 +557,7 @@ public class UI_Manager : MonoBehaviour
     {
         foreach (GameObject currency in coinLerpList)
         {
-            currency.transform.position = Vector2.MoveTowards(currency.transform.position, coinLerpEndpoint.transform.position, 0.1f);
+            currency.transform.position = Vector2.MoveTowards(currency.transform.position, coinLerpEndpoint.transform.position, 0.3f);
             if (Vector2.Distance(currency.transform.position, coinLerpEndpoint.transform.position) < 0.5f)
             {
                 currency.SetActive(false);
@@ -553,6 +568,11 @@ public class UI_Manager : MonoBehaviour
     public void AddToLerpList(GameObject gameObject)
     {
         coinLerpList.Add(gameObject);
+    }
+
+    public void ResetLerpList()
+    {
+        coinLerpList = new List<GameObject>();
     }
 
 
@@ -566,15 +586,15 @@ public class UI_Manager : MonoBehaviour
 
     public void NextEndFrame()
     {
-        activeEndFrame++;
-
-        if (activeStartFrame == startingCutsceneFrames.Length)
+        if (activeEndFrame < endingCutSceneFrames.Length - 1)
         {
-
+            activeEndFrame++;
+            endingCutsceneParent.GetComponent<Image>().sprite = endingCutSceneFrames[activeEndFrame];
         }
         else
         {
-            endingCutsceneParent.GetComponent<Image>().sprite = endingCutSceneFrames[activeEndFrame];
+            LevelManager.levelManager.finalLevelComplete = false;
+            return;
         }
     }
 
