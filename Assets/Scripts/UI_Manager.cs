@@ -58,6 +58,9 @@ public class UI_Manager : MonoBehaviour
     public Button buttonLevelTwo;
     public Button buttonLevelThree;
     public Button buttonGoBack;
+    public GameObject lock1;
+    public GameObject lock2;
+    public GameObject lock3;
 
     public bool loadOptionsOpen;
 
@@ -520,28 +523,34 @@ public class UI_Manager : MonoBehaviour
         if (PlayerStats.playerStats.LevelOneComplete == true)
         {
             buttonLevelOne.interactable = true;
+            lock1.SetActive(false);
         }
         else
         {
             buttonLevelOne.interactable = false;
+            lock1.SetActive(true);
         }
 
         if (PlayerStats.playerStats.LevelTwoComplete == true)
         {
             buttonLevelTwo.interactable = true;
+            lock2.SetActive(false);
         }
         else
         {
             buttonLevelTwo.interactable = false;
+            lock2.SetActive(true);
         }
 
         if (PlayerStats.playerStats.LevelThreeComplete == true)
         {
             buttonLevelThree.interactable = true;
+            lock3.SetActive(false);
         }
         else
         {
             buttonLevelThree.interactable = false;
+            lock3.SetActive(true);
         }
     }
 

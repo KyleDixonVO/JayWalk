@@ -76,7 +76,7 @@ public class LaneParent : MonoBehaviour
 
                 for (int j = 0; j < _levelLength; j++)
                 {
-                    while (generationDistance < _levelLength)
+                    while (generationDistance < _levelLength - 20)
                     {
                         // uses rng to randomise each spawned object
 
@@ -146,8 +146,8 @@ public class LaneParent : MonoBehaviour
 
             case 2:
                 _levelLength = 1000;
-                minObstacleSpacing = defaultMinObstacleSpacing - 2;
-                maxObstacleSpacing = defaultMaxObstacleSpacing - 4;
+                minObstacleSpacing = defaultMinObstacleSpacing - 1;
+                maxObstacleSpacing = defaultMaxObstacleSpacing - 2;
                 rngMax = defaultRngMax + 1;
                 finishLine.transform.position = new Vector2(0, _levelLength);
                 break;
@@ -155,7 +155,7 @@ public class LaneParent : MonoBehaviour
             case 3:
                 _levelLength = 1250;
                 minObstacleSpacing = defaultMinObstacleSpacing - 3;
-                maxObstacleSpacing = defaultMaxObstacleSpacing - 6;
+                maxObstacleSpacing = defaultMaxObstacleSpacing - 4;
                 rngMax = defaultRngMax + 2;
                 finishLine.transform.position = new Vector2(0, _levelLength);
                 break;
