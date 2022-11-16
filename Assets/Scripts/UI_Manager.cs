@@ -9,6 +9,7 @@ using UnityEngine.Events;
 
 public class UI_Manager : MonoBehaviour
 {
+    [Header("Gameplay UI Elements")]
     //gameplay UI elements
     public TMP_Text CurrencyText;
     public TMP_Text HealthText;
@@ -22,6 +23,7 @@ public class UI_Manager : MonoBehaviour
     public GameObject coinLerpEndpoint;
     public List<GameObject> coinLerpList;
 
+    [Header("Upgrade Screen UI Elements")]
     //upgrade UI elements
     public TMP_Text totalCurrencyText;
     public TMP_Text upgradePanelText;
@@ -34,14 +36,14 @@ public class UI_Manager : MonoBehaviour
     public TMP_Text jumpIFramesButton;
     public TMP_Text wingsButton;
 
-
+    [Header("Result Screen UI Elements")]
     //result UI elements
     public TMP_Text currentLevelText;
     public TMP_Text currencyCollectedText;
     public TMP_Text distanceTravelledText;
     public TMP_Text timeElapsedText;
 
-
+    [Header("Canvases")]
     //canvases
     public Canvas gameplayCanvas;
     public Canvas gameOverCanvas;
@@ -52,33 +54,41 @@ public class UI_Manager : MonoBehaviour
     public Canvas mainMenuCanvas;
     public Canvas openingCutsceneCanvas;
 
+    [Header("Load Menu Elements")]
     //loadOptions parent for main menu
     public GameObject loadOptionsParent;
     public Button buttonLevelOne;
     public Button buttonLevelTwo;
     public Button buttonLevelThree;
     public Button buttonGoBack;
+    public Button buttonStartGame;
+    public Button buttonLoadLevels;
+    public Button buttonOptions;
+    public Button buttonQuit;
     public GameObject lock1;
     public GameObject lock2;
     public GameObject lock3;
 
     public bool loadOptionsOpen;
 
+    [Header("Options UI Elements")]
     //Options UI elements
     public Slider MusicVolumeSlider;
     public Slider FXVolumeSlider;
 
+    [Header("End Cutscene UI Elements")]
     //End cutscene elements
     public GameObject endingCutsceneParent;
     public Sprite[] endingCutSceneFrames;
     public int activeEndFrame;
 
-
+    [Header("Starting Cutscene UI Elements")]
     //Starting cutscene elements
     public GameObject startingCutsceneFrameParent;
     public Sprite[] startingCutsceneFrames;
     public int activeStartFrame;
 
+    [Header("Tweening Elements")]
     //Tweening elements
     public GameObject resultsFadeParent;
     public GameObject imageLevelComplete;
@@ -88,11 +98,11 @@ public class UI_Manager : MonoBehaviour
     public GameObject savingObjectParent;
     public GameObject savingImage;
 
+    [Header("Event Elements")]
     //Event elements
     public GameObject caller;
 
     public static UI_Manager ui_manager;
-
     public enum UI_State
     {
         gameplay,
@@ -510,12 +520,20 @@ public class UI_Manager : MonoBehaviour
         loadOptionsParent.SetActive(true);
         EnableLoadButtons();
         loadOptionsOpen = true;
+        buttonStartGame.interactable = false;
+        buttonQuit.interactable = false;
+        buttonOptions.interactable = false;
+        buttonLoadLevels.interactable = false;
     }
 
     public void CloseLoadMenu()
     {
         loadOptionsParent.SetActive(false);
         loadOptionsOpen = false;
+        buttonStartGame.interactable = true;
+        buttonQuit.interactable = true;
+        buttonOptions.interactable = true;
+        buttonLoadLevels.interactable = true;
     }
 
     public void EnableLoadButtons()
