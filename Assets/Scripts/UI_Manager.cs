@@ -574,10 +574,10 @@ public class UI_Manager : MonoBehaviour
 
     public void UpdateResultsText()
     {
-        currentLevelText.text = "Level " + LevelManager.levelManager.activeLevel;
-        currencyCollectedText.text = "Currency Collected: " + PlayerStats.playerStats.currency + " x " + PlayerStats.playerStats.currencyMultiplier + " = " + (int)(PlayerStats.playerStats.currency * PlayerStats.playerStats.currencyMultiplier) + "\r\n Total Currency: " + PlayerStats.playerStats.totalCurrency;
+        currentLevelText.text = LevelManager.levelManager.activeLevel.ToString();
+        currencyCollectedText.text = PlayerStats.playerStats.currency + " x " + PlayerStats.playerStats.currencyMultiplier + " = " + (int)(PlayerStats.playerStats.currency * PlayerStats.playerStats.currencyMultiplier) + " sc" + "\r\n" + PlayerStats.playerStats.totalCurrency + " sc";
         if (PlayerMovement.playerMovement == null) return;
-        distanceTravelledText.text = "Distance Travelled: " + PlayerMovement.playerMovement.gameObject.transform.position.y + " m";
+        distanceTravelledText.text = PlayerMovement.playerMovement.gameObject.transform.position.y + " m";
     }
 
     public void LerpCurrency()
