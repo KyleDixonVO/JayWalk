@@ -169,8 +169,8 @@ public class GameManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.H))
             {
-                PlayerStats.playerStats.health++;
-                PlayerStats.playerStats.currency++;
+                //PlayerStats.playerStats.health++;
+                //PlayerStats.playerStats.currency++;
             }
 
             if (Input.GetKeyDown(KeyCode.U))
@@ -181,12 +181,12 @@ public class GameManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.M))
             {
-                PlayerStats.playerStats.totalCurrency = 900000;
+                //PlayerStats.playerStats.totalCurrency = 900000;
             }
 
             if (Input.GetKeyDown(KeyCode.V))
             {
-                PlayerMovement.playerMovement.gameObject.transform.position = LaneParent.laneParent.finishLine.transform.position;
+                //PlayerMovement.playerMovement.gameObject.transform.position = LaneParent.laneParent.finishLine.transform.position;
             }
         }
     }

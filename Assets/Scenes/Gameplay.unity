@@ -2367,13 +2367,22 @@ MonoBehaviour:
   buttonLevelTwo: {fileID: 0}
   buttonLevelThree: {fileID: 0}
   buttonGoBack: {fileID: 0}
+  buttonStartGame: {fileID: 0}
+  buttonLoadLevels: {fileID: 0}
+  buttonOptions: {fileID: 0}
+  buttonQuit: {fileID: 0}
+  lock1: {fileID: 0}
+  lock2: {fileID: 0}
+  lock3: {fileID: 0}
   loadOptionsOpen: 0
   MusicVolumeSlider: {fileID: 0}
   FXVolumeSlider: {fileID: 0}
   endingCutsceneParent: {fileID: 0}
   endingCutSceneFrames: []
+  activeEndFrame: 0
   startingCutsceneFrameParent: {fileID: 0}
   startingCutsceneFrames: []
+  activeStartFrame: 0
   resultsFadeParent: {fileID: 0}
   imageLevelComplete: {fileID: 0}
   imageRunEnded: {fileID: 0}
@@ -11977,6 +11986,10 @@ PrefabInstance:
     - target: {fileID: 4099102940452577687, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4392962225428297138, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c68ab055f8453f94fa693b32d66c7eca, type: 3}
