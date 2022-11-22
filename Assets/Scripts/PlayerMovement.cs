@@ -224,6 +224,7 @@ public class PlayerMovement : MonoBehaviour
         this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, 0);
         atEndOfLevel = false;
         gliding = false;
+        wingsObject.SetActive(false);
         elapsedGlideTime = 0;
     }
 
