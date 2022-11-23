@@ -75,6 +75,8 @@ public class UI_Manager : MonoBehaviour
     //Options UI elements
     public Slider MusicVolumeSlider;
     public Slider FXVolumeSlider;
+    public Button buttonReset;
+    public GameObject controlsParent;
 
     [Header("End Cutscene UI Elements")]
     //End cutscene elements
@@ -135,6 +137,7 @@ public class UI_Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        controlsParent.SetActive(false);
         coinLerpList = new List<GameObject>();
         CurrencyText = GameObject.Find("CurrencyText").GetComponent<TMP_Text>();
         HealthText = GameObject.Find("HealthText").GetComponent<TMP_Text>();
@@ -240,6 +243,7 @@ public class UI_Manager : MonoBehaviour
                 {
                     coinLerpEndpoint = GameObject.Find("coinLerpEndpoint");
                 }
+
                 Time.timeScale = 1;
                 break;
 
@@ -251,6 +255,16 @@ public class UI_Manager : MonoBehaviour
             case UI_State.options:
                 Time.timeScale = 0;
                 Options();
+
+                if(returnFromOptions == UI_State.paused)
+                {
+                    buttonReset.interactable = false;
+                }
+                else
+                {
+                    buttonReset.interactable = true;
+                }
+                Debug.Log(returnFromOptions);
                 break;
 
             case UI_State.win:
@@ -534,6 +548,16 @@ public class UI_Manager : MonoBehaviour
         buttonQuit.interactable = true;
         buttonOptions.interactable = true;
         buttonLoadLevels.interactable = true;
+    }
+
+    public void OpenControlsMenu()
+    {
+        controlsParent.SetActive(true);
+    }
+
+    public void CloseControlsMenu()
+    {
+        controlsParent.SetActive(false);
     }
 
     public void EnableLoadButtons()
