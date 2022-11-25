@@ -7,7 +7,6 @@ public class PlayerMovement : MonoBehaviour
 {
     float maxSpeed = 15.0f;
     float acceleration = 0.03f;
-    //public float currentSpeed;
     public float elapsedTime = 0;
     public float elapsedJumpIFrameTime;
     public float elapsedGlideTime;
@@ -17,9 +16,8 @@ public class PlayerMovement : MonoBehaviour
     private bool runningJumpCooldown;
     private bool runningJumpIFrames;
     private bool gliding;
-    public float laneSwapTimer;
-    public Vector2 Endpoint;
-    public Vector2 GameObjectPosition;
+
+    private Vector2 Endpoint;
     public GameObject wingsObject;
     public static PlayerMovement playerMovement;
     public Animator PlayerAnim;
@@ -44,7 +42,6 @@ public class PlayerMovement : MonoBehaviour
         PlayerAnim = gameObject.GetComponent<Animator>();
         lane = 2;
         elapsedTime = PlayerStats.playerStats.jumpCooldown;
-        laneSwapTimer = 0;
         atEndOfLevel = false;
         wingsObject.SetActive(false);
     }
@@ -75,8 +72,6 @@ public class PlayerMovement : MonoBehaviour
             this.gameObject.GetComponent<Rigidbody2D>().velocity += Vector2.up * acceleration;
         }
 
-        //currentSpeed = this.gameObject.GetComponent<Rigidbody2D>().velocity.y;
-
         // Used to smoothly move the player between lanes
         Endpoint = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
         this.gameObject.transform.position = Vector2.MoveTowards(transform.position, Endpoint, PlayerStats.playerStats.laneSwapSpeed * Time.deltaTime * 7);
@@ -86,7 +81,6 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             lane--;
-            laneSwapTimer = 0;
             if (lane < 0)
             {
                 lane = 0;
@@ -96,7 +90,6 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             lane++;
-            laneSwapTimer = 0;
             if (lane > 4)
             {
                 lane = 4;
@@ -247,7 +240,7 @@ public class PlayerMovement : MonoBehaviour
         elapsedGlideTime = 0;
     }
 
-    public void JumpCooldown(float timer)
+    private void JumpCooldown(float timer)
     {
         if (gliding) return;
         if (!runningJumpCooldown)
@@ -290,7 +283,7 @@ public class PlayerMovement : MonoBehaviour
         runningIFrames = false;
     }
 
-    public void JumpingIFrames(float timer)
+    private void JumpingIFrames(float timer)
     {
         if (gliding) return;
         if (!runningJumpIFrames)
@@ -322,7 +315,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void GlideIFrames()
+    private void GlideIFrames()
     {
         //the player cannot glide without wings
         if (PlayerStats.playerStats.wingsEnabled == false)
@@ -353,7 +346,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     //Sets animation references
-    public void UpdateAnimRefs()
+    private void UpdateAnimRefs()
     {
         PlayerAnim.SetFloat("Speed", this.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude);
         PlayerAnim.SetFloat("Hangtime", elapsedJumpIFrameTime);

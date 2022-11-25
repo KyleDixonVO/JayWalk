@@ -6,7 +6,7 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager levelManager;
     public int activeLevel;
-    public int numberOfLevels = 3;
+    private int numberOfLevels = 3;
     public bool finalLevelComplete;
 
     public GameObject levelOneParent;
@@ -40,7 +40,7 @@ public class LevelManager : MonoBehaviour
         
     }
 
-    public void IncrementLevel()
+    private void IncrementLevel()
     {
         // increases active level, if the last level is completed the active level is set back to one and final level is registered as complete
         activeLevel++;

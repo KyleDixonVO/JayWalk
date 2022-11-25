@@ -36,8 +36,8 @@ public class SoundManager : MonoBehaviour
     void Start()
     {
         DataManager.dataManager.LoadGlobalData();
-        UI_Manager.ui_manager.MusicVolumeSlider.value = DataManager.dataManager.musicVolume;
-        UI_Manager.ui_manager.FXVolumeSlider.value = DataManager.dataManager.FXVolume;
+        UI_Manager.ui_manager.musicVolumeSlider.value = DataManager.dataManager.musicVolume;
+        UI_Manager.ui_manager.fxVolumeSlider.value = DataManager.dataManager.FXVolume;
 
         TurnOffPlayOnAwake();
 
@@ -48,8 +48,8 @@ public class SoundManager : MonoBehaviour
     void Update()
     {
         if (UI_Manager.ui_manager.state != UI_Manager.UI_State.options) return;
-        DataManager.dataManager.musicVolume = UI_Manager.ui_manager.MusicVolumeSlider.value;
-        DataManager.dataManager.FXVolume = UI_Manager.ui_manager.FXVolumeSlider.value;
+        DataManager.dataManager.musicVolume = UI_Manager.ui_manager.musicVolumeSlider.value;
+        DataManager.dataManager.FXVolume = UI_Manager.ui_manager.fxVolumeSlider.value;
         
         UpdateSoundValues();
     }
@@ -136,7 +136,7 @@ public class SoundManager : MonoBehaviour
     }
 
     // methods used to group similar sound operations together --------------------------------------------------------------------------------------------------------------------------------
-    public void UpdateSoundValues()
+    private void UpdateSoundValues()
     {
         moneyAudio.volume = DataManager.dataManager.FXVolume;
         damageAudio.volume = DataManager.dataManager.FXVolume;
@@ -152,7 +152,7 @@ public class SoundManager : MonoBehaviour
         gemAudio.volume = DataManager.dataManager.FXVolume;
     }
 
-    public void TurnOffPlayOnAwake()
+    private void TurnOffPlayOnAwake()
     {
         moneyAudio.playOnAwake = false;
         damageAudio.playOnAwake = false;

@@ -5,6 +5,8 @@ using UnityEngine;
 public class FollowCam : MonoBehaviour
 {
     public static FollowCam followCam;
+    private int offsetY = 5;
+    private int offsetZ = 10;
     void Awake()
     {
         if (followCam == null)
@@ -29,6 +31,6 @@ public class FollowCam : MonoBehaviour
     {
         //Checks if the player exists, and if it does, the camera follows the player
         if (PlayerMovement.playerMovement == null) return;
-        gameObject.transform.position = new Vector3(0, PlayerMovement.playerMovement.transform.position.y + 5, -10);
+        gameObject.transform.position = new Vector3(0, PlayerMovement.playerMovement.transform.position.y + offsetY, -offsetZ);
     }
 }

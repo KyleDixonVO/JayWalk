@@ -11,9 +11,9 @@ public class UI_Manager : MonoBehaviour
 {
     [Header("Gameplay UI Elements")]
     //gameplay UI elements
-    public TMP_Text CurrencyText;
-    public TMP_Text HealthText;
-    public TMP_Text CompletionText;
+    public TMP_Text currencyText;
+    public TMP_Text healthText;
+    public TMP_Text completionText;
     public TMP_Text jumpText;
     private float levelLength;
     public Slider healthSlider;
@@ -21,9 +21,12 @@ public class UI_Manager : MonoBehaviour
     public Slider jumpSlider;
     public Slider glideSlider;
     public GameObject glideSliderParent;
-    public float HealthFraction;
+    private float healthFraction;
     public GameObject coinLerpEndpoint;
     public List<GameObject> coinLerpList;
+
+    private float lerpSpeed = 0.3f;
+    private float distFromLerpTarget = 0.5f;
 
     [Header("Upgrade Screen UI Elements")]
     //upgrade UI elements
@@ -76,29 +79,29 @@ public class UI_Manager : MonoBehaviour
 
     [Header("Options UI Elements")]
     //Options UI elements
-    public Slider MusicVolumeSlider;
-    public Slider FXVolumeSlider;
+    public Slider musicVolumeSlider;
+    public Slider fxVolumeSlider;
     public Button buttonReset;
-    public GameObject controlsParent;
+    public GameObject controlMenuParent;
 
     [Header("End Cutscene UI Elements")]
     //End cutscene elements
     public GameObject endingCutsceneParent;
     public Sprite[] endingCutSceneFrames;
-    public int activeEndFrame;
+    private int activeEndFrame;
 
     [Header("Starting Cutscene UI Elements")]
     //Starting cutscene elements
     public GameObject startingCutsceneFrameParent;
     public Sprite[] startingCutsceneFrames;
-    public int activeStartFrame;
+    private int activeStartFrame;
 
     [Header("Tweening Elements")]
     //Tweening elements
     public GameObject resultsFadeParent;
     public GameObject imageLevelComplete;
     public GameObject imageRunEnded;
-    public Button runEndToUpgrade;
+    public Button buttonRunEndToUpgrade;
 
     public GameObject savingObjectParent;
     public GameObject savingImage;
@@ -140,11 +143,11 @@ public class UI_Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        controlsParent.SetActive(false);
+        controlMenuParent.SetActive(false);
         coinLerpList = new List<GameObject>();
-        CurrencyText = GameObject.Find("CurrencyText").GetComponent<TMP_Text>();
-        HealthText = GameObject.Find("HealthText").GetComponent<TMP_Text>();
-        CompletionText = GameObject.Find("CompletionText").GetComponent<TMP_Text>();
+        currencyText = GameObject.Find("CurrencyText").GetComponent<TMP_Text>();
+        healthText = GameObject.Find("HealthText").GetComponent<TMP_Text>();
+        completionText = GameObject.Find("CompletionText").GetComponent<TMP_Text>();
         jumpText = GameObject.Find("JumpText").GetComponent<TMP_Text>();
         healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
         completionSlider = GameObject.Find("CompletionSlider").GetComponent<Slider>();
@@ -167,19 +170,17 @@ public class UI_Manager : MonoBehaviour
         EvaluateSwitch();
     }
 
-    
-
-    public void EvaluateSwitch()
+    private void EvaluateSwitch()
     {
         switch (state)
         {
             case UI_State.mainMenu:
-                MainMenu();
+                FocusMainMenuCanvas();
                 Time.timeScale = 0;
                 break;
 
             case UI_State.gameplay:
-                Gameplay();
+                FocusGameplayCanvas();
                 if (coinLerpEndpoint == null)
                 {
                     coinLerpEndpoint = GameObject.Find("coinLerpEndpoint");
@@ -202,12 +203,12 @@ public class UI_Manager : MonoBehaviour
 
             case UI_State.paused:
                 Time.timeScale = 0;
-                Pause();
+                FocusPauseCanvas();
                 break;
 
             case UI_State.options:
                 Time.timeScale = 0;
-                Options();
+                FocusOptionsCanvas();
 
                 if(returnFromOptions == UI_State.paused)
                 {
@@ -221,31 +222,31 @@ public class UI_Manager : MonoBehaviour
 
             case UI_State.win:
                 Time.timeScale = 0;
-                Win();
+                FocusWinCanvas();
                 break;
 
             case UI_State.upgrade:
                 Time.timeScale = 0;
-                Upgrade();
+                FocusUpgradeCanvas();
                 UpgradeMenuUpdate();
                 break;
 
             case UI_State.results:
                 Time.timeScale = 0;
                 activeEndFrame = 0;
-                Gameover();
+                FocusGameoverCanvas();
                 UpdateResultsText();
                 break;
 
             case UI_State.cutscene:
                 Time.timeScale = 0;
-                Cutscene();
+                FocusCutsceneCanvas();
                 break;
         }
 
     }
 
-    public void MultistateChecks()
+    private void MultistateChecks()
     {
         if (state == UI_State.gameplay && GameManager.gameManager.escapePressed)
         {
@@ -311,7 +312,7 @@ public class UI_Manager : MonoBehaviour
     //Methods to update UI elements related to a certain state ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     //Upgrade ------------------------------------------------------------------------------------------------------------------------
-    public void UpgradeMenuUpdate()
+    private void UpgradeMenuUpdate()
     {
         totalCurrencyText.text = "Scum coin (SC): " + PlayerStats.playerStats.totalCurrency.ToString();
 
@@ -507,7 +508,7 @@ public class UI_Manager : MonoBehaviour
         }
 
     }
-    public void UpdatePips()
+    private void UpdatePips()
     {
         for (int i = 0; i < PipParent.transform.childCount; i++)
         {
@@ -595,17 +596,17 @@ public class UI_Manager : MonoBehaviour
     }
 
     //Gameplay -----------------------------------------------------------------------------------------------------------------------
-    public void GameplayUpdate()
+    private void GameplayUpdate()
     {
         if (PlayerMovement.playerMovement == null || PlayerStats.playerStats == null || LaneParent.laneParent == null) return;
 
-        CurrencyText.text = "Scum Coin: " + PlayerStats.playerStats.currency;
-        HealthText.text = "Health: " + PlayerStats.playerStats.health + "/" + PlayerStats.playerStats.maxHealth;
-        CompletionText.text = "Level Progress: ";
+        currencyText.text = "Scum Coin: " + PlayerStats.playerStats.currency;
+        healthText.text = "Health: " + PlayerStats.playerStats.health + "/" + PlayerStats.playerStats.maxHealth;
+        completionText.text = "Level Progress: ";
         jumpText.text = "Jump Charge";
 
-        HealthFraction = ((float)PlayerStats.playerStats.health / (float)PlayerStats.playerStats.maxHealth);
-        healthSlider.value = HealthFraction;
+        healthFraction = ((float)PlayerStats.playerStats.health / (float)PlayerStats.playerStats.maxHealth);
+        healthSlider.value = healthFraction;
         levelLength = LaneParent.laneParent.levelLength;
         completionSlider.value = ((float)PlayerMovement.playerMovement.transform.position.y / (float)levelLength);
 
@@ -618,7 +619,7 @@ public class UI_Manager : MonoBehaviour
             glideSliderParent.SetActive(true);
             if (PlayerMovement.playerMovement.elapsedGlideTime == 0)
             {
-                glideSlider.value = 1.0f;
+                glideSlider.value = glideSlider.maxValue;
             }
             else
             {
@@ -628,7 +629,7 @@ public class UI_Manager : MonoBehaviour
 
         if (PlayerStats.playerStats.canJump)
         {
-            jumpSlider.value = 1.0f;
+            jumpSlider.value = jumpSlider.maxValue;
         }
         else
         {
@@ -637,7 +638,7 @@ public class UI_Manager : MonoBehaviour
     }
 
     //Results ------------------------------------------------------------------------------------------------------------------------
-    public void UpdateResultsText()
+    private void UpdateResultsText()
     {
         currentLevelText.text = LevelManager.levelManager.activeLevel.ToString();
         currencyCollectedText.text = PlayerStats.playerStats.currency + " x " + PlayerStats.playerStats.currencyMultiplier + " = " + (int)(PlayerStats.playerStats.currency * PlayerStats.playerStats.currencyMultiplier) + " sc" + "\r\n" + PlayerStats.playerStats.totalCurrency + " sc";
@@ -706,12 +707,12 @@ public class UI_Manager : MonoBehaviour
     //Options ------------------------------------------------------------------------------------------------------------------------
     public void OpenControlsMenu()
     {
-        controlsParent.SetActive(true);
+        controlMenuParent.SetActive(true);
     }
 
     public void CloseControlsMenu()
     {
-        controlsParent.SetActive(false);
+        controlMenuParent.SetActive(false);
     }
 
 
@@ -720,8 +721,8 @@ public class UI_Manager : MonoBehaviour
     {
         foreach (GameObject currency in coinLerpList)
         {
-            currency.transform.position = Vector2.MoveTowards(currency.transform.position, coinLerpEndpoint.transform.position, 0.3f);
-            if (Vector2.Distance(currency.transform.position, coinLerpEndpoint.transform.position) < 0.5f)
+            currency.transform.position = Vector2.MoveTowards(currency.transform.position, coinLerpEndpoint.transform.position, lerpSpeed);
+            if (Vector2.Distance(currency.transform.position, coinLerpEndpoint.transform.position) < distFromLerpTarget)
             {
                 currency.SetActive(false);
             }
@@ -737,8 +738,6 @@ public class UI_Manager : MonoBehaviour
     {
         coinLerpList = new List<GameObject>();
     }
-
-    
 
 
     //Cutscene methods ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -772,7 +771,6 @@ public class UI_Manager : MonoBehaviour
         {
             PlayerStats.playerStats.FirstRun = false;
             DataManager.dataManager.SavePlayerData();
-            //state = UI_State.mainMenu;
             state = UI_State.gameplay;
             GameManager.gameManager.SwitchToGamePlay();
             openingCutsceneCanvas.gameObject.SetActive(false);
@@ -811,7 +809,7 @@ public class UI_Manager : MonoBehaviour
     {
         Tween fadeIn = rendererToFade.DOFade(1, (float)0.5);
         yield return fadeIn.WaitForCompletion();
-        runEndToUpgrade.gameObject.SetActive(true);
+        buttonRunEndToUpgrade.gameObject.SetActive(true);
     }
 
     public void ShowSaveIndicator()
@@ -827,7 +825,7 @@ public class UI_Manager : MonoBehaviour
 
 
     //methods to toggle active canvas based on state -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    public void MainMenu()
+    private void FocusMainMenuCanvas()
     {
         mainMenuCanvas.enabled = true;
         gameplayCanvas.enabled = false;
@@ -839,7 +837,7 @@ public class UI_Manager : MonoBehaviour
         openingCutsceneCanvas.enabled = false;
     }
 
-    public void Gameplay()
+    private void FocusGameplayCanvas()
     {
         mainMenuCanvas.enabled = false;
         gameplayCanvas.enabled = true;
@@ -851,7 +849,7 @@ public class UI_Manager : MonoBehaviour
         openingCutsceneCanvas.enabled = false;
     }
 
-    public void Pause()
+    private void FocusPauseCanvas()
     {
         pauseCanvas.enabled = true;
         gameplayCanvas.enabled = true;
@@ -859,7 +857,7 @@ public class UI_Manager : MonoBehaviour
         
     }
 
-    public void Options()
+    private void FocusOptionsCanvas()
     {
         mainMenuCanvas.enabled = false;
         gameplayCanvas.enabled = false;
@@ -871,7 +869,7 @@ public class UI_Manager : MonoBehaviour
         openingCutsceneCanvas.enabled = false;
     }
 
-    public void Win()
+    private void FocusWinCanvas()
     {
         mainMenuCanvas.enabled = false;
         gameplayCanvas.enabled = false;
@@ -883,7 +881,7 @@ public class UI_Manager : MonoBehaviour
         openingCutsceneCanvas.enabled = false;
     }
 
-    public void Gameover()
+    private void FocusGameoverCanvas()
     {
         mainMenuCanvas.enabled = false;
         gameplayCanvas.enabled = false;
@@ -895,7 +893,7 @@ public class UI_Manager : MonoBehaviour
         openingCutsceneCanvas.enabled = false;
     }
 
-    public void Upgrade()
+    private void FocusUpgradeCanvas()
     {
         mainMenuCanvas.enabled = false;
         gameplayCanvas.enabled = false;
@@ -907,7 +905,7 @@ public class UI_Manager : MonoBehaviour
         openingCutsceneCanvas.enabled = false;
     }
 
-    public void Cutscene()
+    private void FocusCutsceneCanvas()
     {
         mainMenuCanvas.enabled = false;
         gameplayCanvas.enabled = false;

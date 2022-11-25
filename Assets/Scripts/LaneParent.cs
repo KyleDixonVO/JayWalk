@@ -7,17 +7,17 @@ public class LaneParent : MonoBehaviour
 {
     private int numberOfLanes = 5;
     public GameObject[] lane;
-    public GameObject[,]obstacleLists;
+    private GameObject[,]obstacleLists;
     public GameObject ObstaclePrefab;
     public GameObject TallObstaclePrefab;
     public GameObject CurrencyPrefab;
     public GameObject GemPrefab;
     public GameObject HealthUpPrefab;
     public GameObject finishLine;
-    public float minObstacleSpacing = 8.0f;
-    public float maxObstacleSpacing = 20.0f;
-    public int rngMax = 20;
-    public int rngMin = 0;
+    private float minObstacleSpacing = 8.0f;
+    private float maxObstacleSpacing = 20.0f;
+    private int rngMax = 20;
+    private int rngMin = 0;
     private float _levelLength;
     private float defaultLength = 750;
     private float defaultMinObstacleSpacing = 8.0f;
@@ -27,7 +27,7 @@ public class LaneParent : MonoBehaviour
     {
         get { return _levelLength; }
     }
-    public float generationDistance;
+    private float generationDistance;
     public static LaneParent laneParent;
 
     void Awake()
@@ -132,13 +132,13 @@ public class LaneParent : MonoBehaviour
         }
     }
 
-    public void UpdateGenerationPerameters()
+    private void UpdateGenerationPerameters()
     {
         //Updates level generation perameters based on the active level
         switch (LevelManager.levelManager.activeLevel)
         {
             case 1:
-                _levelLength = 750;
+                _levelLength = defaultLength;
                 minObstacleSpacing = defaultMinObstacleSpacing;
                 maxObstacleSpacing = defaultMaxObstacleSpacing;
                 rngMax = defaultRngMax;
@@ -146,18 +146,18 @@ public class LaneParent : MonoBehaviour
                 break;
 
             case 2:
-                _levelLength = 1000;
-                minObstacleSpacing = defaultMinObstacleSpacing - 1;
-                maxObstacleSpacing = defaultMaxObstacleSpacing - 2;
-                rngMax = defaultRngMax + 1;
+                _levelLength = defaultLength + (defaultLength / 3);
+                minObstacleSpacing = defaultMinObstacleSpacing - (LevelManager.levelManager.activeLevel - 1);
+                maxObstacleSpacing = defaultMaxObstacleSpacing - LevelManager.levelManager.activeLevel;
+                rngMax = defaultRngMax + (LevelManager.levelManager.activeLevel - 1);
                 finishLine.transform.position = new Vector2(0, _levelLength);
                 break;
 
             case 3:
-                _levelLength = 1250;
-                minObstacleSpacing = defaultMinObstacleSpacing - 3;
-                maxObstacleSpacing = defaultMaxObstacleSpacing - 4;
-                rngMax = defaultRngMax + 2;
+                _levelLength = defaultLength + (2 *(defaultLength / 3));
+                minObstacleSpacing = defaultMinObstacleSpacing - LevelManager.levelManager.activeLevel;
+                maxObstacleSpacing = defaultMaxObstacleSpacing - (LevelManager.levelManager.activeLevel + 1);
+                rngMax = defaultRngMax + (LevelManager.levelManager.activeLevel - 1);
                 finishLine.transform.position = new Vector2(0, _levelLength);
                 break;
         }

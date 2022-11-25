@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
         UpdateTotalCurrency();
     }
 
-    public void ResetRun()
+    private void ResetRun()
     {
         PlayerStats.playerStats.ResetRun();
         UI_Manager.ui_manager.ResetLerpList();
@@ -94,7 +94,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void DevDebugInputs()
+    private void DevDebugInputs()
     {
         if (gameplayActive)
         {
@@ -139,7 +139,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CallMusic()
+    private void CallMusic()
     {
         if (UI_Manager.ui_manager.state == UI_Manager.UI_State.gameplay)
         {
@@ -159,13 +159,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void UpdateActiveSceneReference()
+    private void UpdateActiveSceneReference()
     {
         scene = SceneManager.GetActiveScene();
         sceneIndex = scene.buildIndex;
     }
 
-    public void CheckBreakConditions()
+    private void CheckBreakConditions()
     {
         if (LevelManager.levelManager.finalLevelComplete)
         {
@@ -189,7 +189,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void UpdateTotalCurrency()
+    private void UpdateTotalCurrency()
     {
         if ((gameLoss == true || wonLevel == true) && PlayerStats.playerStats.CurrencyTotaled == false)
         {
