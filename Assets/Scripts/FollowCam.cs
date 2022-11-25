@@ -27,6 +27,7 @@ public class FollowCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Checks if the player exists, and if it does, the camera follows the player
         if (PlayerMovement.playerMovement == null) return;
         gameObject.transform.position = new Vector3(0, PlayerMovement.playerMovement.transform.position.y + 5, -10);
     }

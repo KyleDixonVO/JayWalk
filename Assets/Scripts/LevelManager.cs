@@ -42,6 +42,7 @@ public class LevelManager : MonoBehaviour
 
     public void IncrementLevel()
     {
+        // increases active level, if the last level is completed the active level is set back to one and final level is registered as complete
         activeLevel++;
         if (activeLevel > numberOfLevels)
         {
@@ -52,6 +53,7 @@ public class LevelManager : MonoBehaviour
 
     public void LevelComplete()
     {
+        //Unlocks associated level in level select after level completion
         if (activeLevel == 1 && PlayerStats.playerStats.LevelOneComplete == false)
         {
             PlayerStats.playerStats.LevelOneComplete = true;
@@ -71,6 +73,7 @@ public class LevelManager : MonoBehaviour
 
     public void LoadLevel()
     {
+        //Hides and displays appropriate level backgrounds
         switch (activeLevel) 
         {
             case 1:
@@ -94,6 +97,8 @@ public class LevelManager : MonoBehaviour
 
     }
 
+
+    //Methods used to load directly into a level from level select
     public void LoadLevel1()
     {
         activeLevel = 1;

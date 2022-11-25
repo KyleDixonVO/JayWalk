@@ -40,24 +40,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (UI_Manager.ui_manager.state == UI_Manager.UI_State.gameplay)
-        {
-            SoundManager.soundManager.PlayGameplayMusic();
-            Debug.Log("Playing Gameplay Music");
-        }
-        else if (UI_Manager.ui_manager.state == UI_Manager.UI_State.mainMenu)
-        {
-            SoundManager.soundManager.PlayMainMenuMusic();
-            Debug.Log("Playing Main Menu Music");
-        }
-        else if (UI_Manager.ui_manager.state == UI_Manager.UI_State.paused)
-        {
-            SoundManager.soundManager.gameplayMusic.Pause();
-        }
-        else
-        {
-            SoundManager.soundManager.StopMusic();
-        }
+        CallMusic();
 
         DevDebugInputs();
 
@@ -66,39 +49,16 @@ public class GameManager : MonoBehaviour
             escapePressed = !escapePressed;
         }
 
-        scene = SceneManager.GetActiveScene();
-        sceneIndex = scene.buildIndex;
+        UpdateActiveSceneReference();
 
-        if (!PlayerStats.playerStats.isAlive)
-        {
-            gameLoss = true;
+        CheckBreakConditions();
 
-        }
-
-        if (PlayerMovement.playerMovement == null) return;
-        if (PlayerMovement.playerMovement.atEndOfLevel)
-        {
-            wonLevel = true;
-        }
-
-        if((gameLoss == true || wonLevel == true) && PlayerStats.playerStats.CurrencyTotaled == false)
-        {
-            PlayerStats.playerStats.UpdateTotalCurrency();
-        }
-
-        if (LevelManager.levelManager.finalLevelComplete)
-        {
-            gameWon = true;
-        }
-        else if (LevelManager.levelManager.finalLevelComplete == false && UI_Manager.ui_manager.state != UI_Manager.UI_State.win)
-        {
-            gameWon = false;
-        }
+        UpdateTotalCurrency();
     }
 
     public void ResetRun()
     {
-        PlayerStats.playerStats.Reset();
+        PlayerStats.playerStats.ResetRun();
         UI_Manager.ui_manager.ResetLerpList();
 
         gameLoss = false;
@@ -112,7 +72,7 @@ public class GameManager : MonoBehaviour
 
         if (PlayerMovement.playerMovement != null)
         {
-            PlayerMovement.playerMovement.Reset();
+            PlayerMovement.playerMovement.ResetRun();
         }
  
     }
@@ -132,18 +92,6 @@ public class GameManager : MonoBehaviour
             gameplayActive = true;
             ResetRun();
         }
-    }
-
-    public void SwitchToMainMenu()
-    {
-        SceneManager.LoadScene(0);
-        gameplayActive = false;
-        UI_Manager.ui_manager.SwitchMainMenu();
-    }
-
-    public void QuitGame()
-    {
-        Application.Quit();
     }
 
     public void DevDebugInputs()
@@ -189,6 +137,80 @@ public class GameManager : MonoBehaviour
                 //PlayerMovement.playerMovement.gameObject.transform.position = LaneParent.laneParent.finishLine.transform.position;
             }
         }
+    }
+
+    public void CallMusic()
+    {
+        if (UI_Manager.ui_manager.state == UI_Manager.UI_State.gameplay)
+        {
+            SoundManager.soundManager.PlayGameplayMusic();
+            Debug.Log("Playing Gameplay Music");
+        }
+        else if (UI_Manager.ui_manager.state == UI_Manager.UI_State.mainMenu)
+        {
+            SoundManager.soundManager.PlayMainMenuMusic();
+            Debug.Log("Playing Main Menu Music");
+        }
+        else if (UI_Manager.ui_manager.state == UI_Manager.UI_State.paused)
+        {
+            SoundManager.soundManager.gameplayMusic.Pause();
+        }
+        else
+        {
+            SoundManager.soundManager.StopMusic();
+        }
+    }
+
+    public void UpdateActiveSceneReference()
+    {
+        scene = SceneManager.GetActiveScene();
+        sceneIndex = scene.buildIndex;
+    }
+
+    public void CheckBreakConditions()
+    {
+        if (LevelManager.levelManager.finalLevelComplete)
+        {
+            gameWon = true;
+        }
+        else if (LevelManager.levelManager.finalLevelComplete == false && UI_Manager.ui_manager.state != UI_Manager.UI_State.win)
+        {
+            gameWon = false;
+        }
+
+        if (!PlayerStats.playerStats.isAlive)
+        {
+            gameLoss = true;
+
+        }
+
+        if (PlayerMovement.playerMovement == null) return;
+        if (PlayerMovement.playerMovement.atEndOfLevel)
+        {
+            wonLevel = true;
+        }
+    }
+
+    public void UpdateTotalCurrency()
+    {
+        if ((gameLoss == true || wonLevel == true) && PlayerStats.playerStats.CurrencyTotaled == false)
+        {
+            PlayerStats.playerStats.UpdateTotalCurrency();
+        }
+    }
+
+
+    //methods to be attached to buttons
+    public void SwitchToMainMenu()
+    {
+        SceneManager.LoadScene(0);
+        gameplayActive = false;
+        UI_Manager.ui_manager.SwitchMainMenu();
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     public void LoadLevelOne()

@@ -38,20 +38,8 @@ public class SoundManager : MonoBehaviour
         DataManager.dataManager.LoadGlobalData();
         UI_Manager.ui_manager.MusicVolumeSlider.value = DataManager.dataManager.musicVolume;
         UI_Manager.ui_manager.FXVolumeSlider.value = DataManager.dataManager.FXVolume;
-        //Debug.Log(DataManager.dataManager.FXVolume + "  " + UI_Manager.ui_manager.FXVolumeSlider.value);
 
-        moneyAudio.playOnAwake = false;
-        damageAudio.playOnAwake = false;
-        healAudio.playOnAwake = false;
-        mainMenuMusic.playOnAwake = false;
-        gameplayMusic.playOnAwake = false;
-        insufficientFundsAudio.playOnAwake = false;
-        purchaseAudio.playOnAwake = false;
-        jumpAudio.playOnAwake = false;
-        landingAudio.playOnAwake = false;
-        menuBackAudio.playOnAwake = false;
-        menuSelectionAudio.playOnAwake = false;
-        gemAudio.playOnAwake = false;
+        TurnOffPlayOnAwake();
 
         UpdateSoundValues();
     }
@@ -66,6 +54,7 @@ public class SoundManager : MonoBehaviour
         UpdateSoundValues();
     }
 
+    // methods used to play individual sounds -------------------------------------------------------------------------------------------------------------------------------------------
     public void PlayHealAudio()
     {
         if (healAudio.isPlaying) return;
@@ -146,7 +135,7 @@ public class SoundManager : MonoBehaviour
         mainMenuMusic.Stop();
     }
 
-
+    // methods used to group similar sound operations together --------------------------------------------------------------------------------------------------------------------------------
     public void UpdateSoundValues()
     {
         moneyAudio.volume = DataManager.dataManager.FXVolume;
@@ -161,5 +150,21 @@ public class SoundManager : MonoBehaviour
         menuBackAudio.volume = DataManager.dataManager.FXVolume;
         menuSelectionAudio.volume = DataManager.dataManager.FXVolume;
         gemAudio.volume = DataManager.dataManager.FXVolume;
+    }
+
+    public void TurnOffPlayOnAwake()
+    {
+        moneyAudio.playOnAwake = false;
+        damageAudio.playOnAwake = false;
+        healAudio.playOnAwake = false;
+        mainMenuMusic.playOnAwake = false;
+        gameplayMusic.playOnAwake = false;
+        insufficientFundsAudio.playOnAwake = false;
+        purchaseAudio.playOnAwake = false;
+        jumpAudio.playOnAwake = false;
+        landingAudio.playOnAwake = false;
+        menuBackAudio.playOnAwake = false;
+        menuSelectionAudio.playOnAwake = false;
+        gemAudio.playOnAwake = false;
     }
 }

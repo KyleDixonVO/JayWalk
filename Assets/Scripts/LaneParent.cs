@@ -134,6 +134,7 @@ public class LaneParent : MonoBehaviour
 
     public void UpdateGenerationPerameters()
     {
+        //Updates level generation perameters based on the active level
         switch (LevelManager.levelManager.activeLevel)
         {
             case 1:

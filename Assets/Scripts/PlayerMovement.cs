@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     float maxSpeed = 15.0f;
     float acceleration = 0.03f;
-    public float currentSpeed;
+    //public float currentSpeed;
     public float elapsedTime = 0;
     public float elapsedJumpIFrameTime;
     public float elapsedGlideTime;
@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Awake()
     {
+        //Singleton pattern
         if (playerMovement == null)
         {
             playerMovement = this;
@@ -40,7 +41,6 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // starts player in middle lane
         PlayerAnim = gameObject.GetComponent<Animator>();
         lane = 2;
         elapsedTime = PlayerStats.playerStats.jumpCooldown;
@@ -53,10 +53,8 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
-        AnimatePlayer();
-        //Debug.Log("Swap Speed Tier: " + PlayerStats.playerStats.laneSwapSpeed);
+        UpdateAnimRefs();
         if (UI_Manager.ui_manager.state != UI_Manager.UI_State.gameplay) return;
-
 
         // Stops the player from moving if they are dead or if they are at the end of a level
         if (this.gameObject.transform.position.y >= LaneParent.laneParent.levelLength || !PlayerStats.playerStats.isAlive)
@@ -66,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
+        // Accelerates player until they reach max speed, then clamps speed to max
         if (this.gameObject.GetComponent<Rigidbody2D>().velocity.y > maxSpeed)
         {
             this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1 * maxSpeed);
@@ -76,8 +75,9 @@ public class PlayerMovement : MonoBehaviour
             this.gameObject.GetComponent<Rigidbody2D>().velocity += Vector2.up * acceleration;
         }
 
-        currentSpeed = this.gameObject.GetComponent<Rigidbody2D>().velocity.y;
+        //currentSpeed = this.gameObject.GetComponent<Rigidbody2D>().velocity.y;
 
+        // Used to smoothly move the player between lanes
         Endpoint = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, this.gameObject.transform.position.y);
         this.gameObject.transform.position = Vector2.MoveTowards(transform.position, Endpoint, PlayerStats.playerStats.laneSwapSpeed * Time.deltaTime * 7);
 
@@ -91,7 +91,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 lane = 0;
             }
-            //Debug.Log("Current lane: " + lane);
         }
 
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
@@ -102,14 +101,14 @@ public class PlayerMovement : MonoBehaviour
             {
                 lane = 4;
             }
-            //Debug.Log("Current lane: " + lane);
         }
 
+
+        // Player jumps on space down
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (PlayerStats.playerStats.canJump)
             {
-                Debug.Log("Jumping");
                 PlayerStats.playerStats.canJump = false;
                 runningJumpCooldown = true;
                 runningJumpIFrames = true;
@@ -117,27 +116,27 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        // Player glides if space is held while mid jump
         if (Input.GetKey(KeyCode.Space))
         {
             if (PlayerStats.playerStats.isJumping)
             {
-                //Debug.Log("Attempting Glide");
                 GlideIFrames();
             }
         }
 
+        // Glide stops when space is released
         if (Input.GetKeyUp(KeyCode.Space))
         {
             gliding = false;
             wingsObject.SetActive(false);
         }
 
+        // Resets glide time when the player is not jumping
         if (PlayerStats.playerStats.isJumping == false)
         {
             elapsedGlideTime = 0;
-            //Debug.Log("Glide time reset");
         }
-
 
         JumpCooldown(PlayerStats.playerStats.jumpCooldown);
         JumpingIFrames(PlayerStats.playerStats.jumpIFrames);
@@ -146,25 +145,31 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        
-
+        //checks if player collided with a regular obstacle
         if (collision.gameObject.CompareTag("Obstacle"))
         {
+            //ignores collision if the player is jumping or gliding
             if (PlayerStats.playerStats.isJumping || gliding) return;
+
+            //if the player is not invincible they take damage and the damage audio is played
             if (!PlayerStats.playerStats.invincible)
             {
                 PlayerStats.playerStats.TakeDamage(1);
                 SoundManager.soundManager.PlayDamageAudio();
             }
 
+            //if i-Frames are not running, the coroutine is started, this only occurs when the player is not invincible
             if (!runningIFrames)
             {
                 StartCoroutine(IFrames(PlayerStats.playerStats.invincibilityTime));
             }
 
+            //slows the player and deactivates the obstacle collided with
             this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1);
             collision.gameObject.SetActive(false);
         }
+
+        //checks if player collided with a StageObstacle
         else if (collision.gameObject.CompareTag("StageObstacle"))
         {
             if (PlayerStats.playerStats.isJumping || gliding) return;
@@ -181,8 +186,12 @@ public class PlayerMovement : MonoBehaviour
 
             this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1);
         }
+
+        // checks if player collided with a TallObstacle
         else if (collision.gameObject.CompareTag("TallObstacle"))
         {
+            //Tall obstacles cannot be jumped or glided over
+        
             if (!PlayerStats.playerStats.invincible)
             {
                 PlayerStats.playerStats.TakeDamage(1);
@@ -197,28 +206,38 @@ public class PlayerMovement : MonoBehaviour
             this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1);
             collision.gameObject.SetActive(false);
         }
+
+        //checks if player collided with a healthUp
         else if (collision.gameObject.CompareTag("HealthUp"))
         {
+            //heals one hitpoint, plays the appropriate audio, and deactivates the collectible
             PlayerStats.playerStats.Heal(1);
             SoundManager.soundManager.PlayHealAudio();
             collision.gameObject.SetActive(false);
         }
+
+        //checks if player collided with currency
         else if (collision.gameObject.CompareTag("Currency"))
         {
+            //increases the players currency count by one, plays the appropriate audio
             PlayerStats.playerStats.IncreaseMoney(1);
             SoundManager.soundManager.PlayMoneyAudio();
+
+            //lerps the coin to a preset position on the hud to show that the coins are being collected
             UI_Manager.ui_manager.AddToLerpList(collision.gameObject);
         }
         else if (collision.gameObject.CompareTag("Gem"))
         {
+           //same as coins, but with a value of 5
             PlayerStats.playerStats.IncreaseMoney(5);
             SoundManager.soundManager.PlayGemAudio();
             UI_Manager.ui_manager.AddToLerpList(collision.gameObject);
         }
     }
 
-    public void Reset()
+    public void ResetRun()
     {
+        //resets all necessary stats between runs
         this.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         lane = 2;
         this.gameObject.transform.position = new Vector2(LaneParent.laneParent.transform.GetChild(lane).transform.position.x, 0);
@@ -238,34 +257,34 @@ public class PlayerMovement : MonoBehaviour
         else if (!PlayerStats.playerStats.canJump)
         {
             elapsedTime += Time.deltaTime;
-            //Debug.Log("Cooldown time: " + elapsedTime);
         }
 
         if (elapsedTime >= PlayerStats.playerStats.jumpCooldown)
         {
-            //Debug.Log(PlayerStats.playerStats.jumpCooldown);
-            //Debug.Log("Cooldown complete");
             PlayerStats.playerStats.canJump = true;
             runningJumpCooldown = false;
-
         }
 
     }
 
     IEnumerator IFrames(float timer)
     {
+        // flips bool to true to ensure that the method cannot overlap with itself
         runningIFrames = true;
         PlayerStats.playerStats.invincible = true;
         Debug.Log("I-Frames Starting");
         float normalizedTime = 0f;
+
+        // counts down the invincibility time
         while(normalizedTime <= 1f)
         {
             normalizedTime += Time.deltaTime / timer;
+            //flashes player sprite red to indicate damage taken
             gameObject.GetComponent<SpriteRenderer>().DOColor(Color.red, 0.1f);
-            //Debug.Log(normalizedTime);
             yield return null;
         }
 
+        //reverts player sprite to normal
         gameObject.GetComponent<SpriteRenderer>().DOColor(Color.white, 0.1f);
         PlayerStats.playerStats.invincible = false;
         runningIFrames = false;
@@ -280,34 +299,39 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (elapsedJumpIFrameTime < timer)
         {
+            //while the elapsed I-frame time is less than the timer limit
+
             if (!PlayerStats.playerStats.isJumping)
             {
+                //turns player sprite grey to show invincibility
                 gameObject.GetComponent<SpriteRenderer>().DOColor(Color.grey, 0.1f);
             }
             PlayerStats.playerStats.isJumping = true;
             runningJumpIFrames = true;
             elapsedJumpIFrameTime += Time.deltaTime;
-            
-            //Debug.Log(elapsedJumpIFrameTime);
         }
 
-
+        //when the elapsed time exceed the timer limit
         if(elapsedJumpIFrameTime >= timer)
         {
             PlayerStats.playerStats.isJumping = false;
             runningJumpIFrames = false;
             SoundManager.soundManager.PlayLandingAudio();
+            //returns the player sprite to normal
             gameObject.GetComponent<SpriteRenderer>().DOColor(Color.white, 0.1f);
         }
     }
 
     public void GlideIFrames()
     {
+        //the player cannot glide without wings
         if (PlayerStats.playerStats.wingsEnabled == false)
         {
             Debug.Log("No wings");
             return;
         }
+
+        //while the elapsed glide time is less than the limit
         if (elapsedGlideTime < PlayerStats.playerStats.glideTime)
         {
             gliding = true;
@@ -316,6 +340,8 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log(elapsedGlideTime);
             wingsObject.SetActive(true);
         }
+
+        //once the limit is reached
         if (elapsedGlideTime >= PlayerStats.playerStats.glideTime)
         {
             gliding = false;
@@ -326,7 +352,8 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    public void AnimatePlayer()
+    //Sets animation references
+    public void UpdateAnimRefs()
     {
         PlayerAnim.SetFloat("Speed", this.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude);
         PlayerAnim.SetFloat("Hangtime", elapsedJumpIFrameTime);

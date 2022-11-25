@@ -111,7 +111,7 @@ public class PlayerStats : MonoBehaviour
         CurrencyTotaled = true;
     }
 
-    public void Reset()
+    public void ResetRun()
     {
         health = maxHealth;
         currency = 0;

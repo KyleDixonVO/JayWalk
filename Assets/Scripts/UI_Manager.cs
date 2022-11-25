@@ -160,75 +160,12 @@ public class UI_Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (state == UI_State.gameplay)
-        {
-            GameplayUpdate();
-            LerpCurrency();
-        }
-
-        if (state == UI_State.gameplay && GameManager.gameManager.gameWon == true)
-        {
-            state = UI_State.win;
-
-            if (activeEndFrame == 0)
-            {
-                endingCutsceneParent.GetComponent<Image>().sprite = endingCutSceneFrames[activeEndFrame];
-            }
-        }
-
-        if (state == UI_State.gameplay && GameManager.gameManager.escapePressed)
-        {
-            returnFromPause = state;
-            state = UI_State.paused;
-        }
-        else if (state == UI_State.paused && !GameManager.gameManager.escapePressed)
-        {
-            state = returnFromPause;
-        }
-
-        if (state == UI_State.upgrade)
-        {
-            UpgradeMenuUpdate();
-        }
-
-        if (state == UI_State.gameplay && (GameManager.gameManager.gameLoss == true || GameManager.gameManager.wonLevel == true))
-        {
-            if (resultsFadeParent.activeInHierarchy == true) return;
-            resultsFadeParent.SetActive(true);
-            FadeInResultsTween();
-        }
-        else
-        {
-            resultsFadeParent.SetActive(false);
-        }
+        MultistateChecks();
 
         EvaluateSwitch();
     }
 
-    public void GameplayUpdate()
-    {
-        if (PlayerMovement.playerMovement == null || PlayerStats.playerStats == null || LaneParent.laneParent == null) return;
-
-        CurrencyText.text = "Scum Coin: " + PlayerStats.playerStats.currency;
-        HealthText.text = "Health: " + PlayerStats.playerStats.health + "/" + PlayerStats.playerStats.maxHealth;
-        CompletionText.text = "Level Progress: ";
-        jumpText.text = "Jump Charge: ";
-
-        HealthFraction = ((float)PlayerStats.playerStats.health / (float)PlayerStats.playerStats.maxHealth);
-        //Debug.Log(HealthFraction);
-        healthSlider.value = HealthFraction;
-        levelLength = LaneParent.laneParent.levelLength;
-        completionSlider.value = ((float)PlayerMovement.playerMovement.transform.position.y / (float)levelLength);
-
-        if (PlayerStats.playerStats.canJump)
-        {
-            jumpSlider.value = 1.0f;
-        }
-        else
-        {
-            jumpSlider.value = ((float)PlayerMovement.playerMovement.elapsedTime / PlayerStats.playerStats.jumpCooldown);
-        }
-    }
+    
 
     public void EvaluateSwitch()
     {
@@ -244,6 +181,18 @@ public class UI_Manager : MonoBehaviour
                 if (coinLerpEndpoint == null)
                 {
                     coinLerpEndpoint = GameObject.Find("coinLerpEndpoint");
+                }
+                GameplayUpdate();
+                LerpCurrency();
+
+                if (GameManager.gameManager.gameWon == true)
+                {
+                    state = UI_State.win;
+
+                    if (activeEndFrame == 0)
+                    {
+                        endingCutsceneParent.GetComponent<Image>().sprite = endingCutSceneFrames[activeEndFrame];
+                    }
                 }
 
                 Time.timeScale = 1;
@@ -277,6 +226,7 @@ public class UI_Manager : MonoBehaviour
             case UI_State.upgrade:
                 Time.timeScale = 0;
                 Upgrade();
+                UpgradeMenuUpdate();
                 break;
 
             case UI_State.results:
@@ -294,8 +244,32 @@ public class UI_Manager : MonoBehaviour
 
     }
 
+    public void MultistateChecks()
+    {
+        if (state == UI_State.gameplay && GameManager.gameManager.escapePressed)
+        {
+            returnFromPause = state;
+            state = UI_State.paused;
+        }
+        else if (state == UI_State.paused && !GameManager.gameManager.escapePressed)
+        {
+            state = returnFromPause;
+        }
 
-    //State toggles to be used with buttons
+        if (state == UI_State.gameplay && (GameManager.gameManager.gameLoss == true || GameManager.gameManager.wonLevel == true))
+        {
+            if (resultsFadeParent.activeInHierarchy == true) return;
+            resultsFadeParent.SetActive(true);
+            FadeInResultsTween();
+        }
+        else
+        {
+            resultsFadeParent.SetActive(false);
+        }
+    }
+
+
+    //State toggles to be used with buttons -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void ReturnFromOptions()
     {
         state = returnFromOptions;
@@ -333,9 +307,9 @@ public class UI_Manager : MonoBehaviour
         state = UI_State.results;
     }
 
+    //Methods to update UI elements related to a certain state ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    //Unsorted Methods
-
+    //Upgrade ------------------------------------------------------------------------------------------------------------------------
     public void UpgradeMenuUpdate()
     {
         totalCurrencyText.text = "Scum coin (SC): " + PlayerStats.playerStats.totalCurrency.ToString();
@@ -532,7 +506,6 @@ public class UI_Manager : MonoBehaviour
         }
 
     }
-
     public void UpdatePips()
     {
         for (int i = 0; i < PipParent.transform.childCount; i++)
@@ -620,6 +593,42 @@ public class UI_Manager : MonoBehaviour
         }
     }
 
+    //Gameplay -----------------------------------------------------------------------------------------------------------------------
+    public void GameplayUpdate()
+    {
+        if (PlayerMovement.playerMovement == null || PlayerStats.playerStats == null || LaneParent.laneParent == null) return;
+
+        CurrencyText.text = "Scum Coin: " + PlayerStats.playerStats.currency;
+        HealthText.text = "Health: " + PlayerStats.playerStats.health + "/" + PlayerStats.playerStats.maxHealth;
+        CompletionText.text = "Level Progress: ";
+        jumpText.text = "Jump Charge: ";
+
+        HealthFraction = ((float)PlayerStats.playerStats.health / (float)PlayerStats.playerStats.maxHealth);
+        //Debug.Log(HealthFraction);
+        healthSlider.value = HealthFraction;
+        levelLength = LaneParent.laneParent.levelLength;
+        completionSlider.value = ((float)PlayerMovement.playerMovement.transform.position.y / (float)levelLength);
+
+        if (PlayerStats.playerStats.canJump)
+        {
+            jumpSlider.value = 1.0f;
+        }
+        else
+        {
+            jumpSlider.value = ((float)PlayerMovement.playerMovement.elapsedTime / PlayerStats.playerStats.jumpCooldown);
+        }
+    }
+
+    //Results ------------------------------------------------------------------------------------------------------------------------
+    public void UpdateResultsText()
+    {
+        currentLevelText.text = LevelManager.levelManager.activeLevel.ToString();
+        currencyCollectedText.text = PlayerStats.playerStats.currency + " x " + PlayerStats.playerStats.currencyMultiplier + " = " + (int)(PlayerStats.playerStats.currency * PlayerStats.playerStats.currencyMultiplier) + " sc" + "\r\n" + PlayerStats.playerStats.totalCurrency + " sc";
+        if (PlayerMovement.playerMovement == null) return;
+        distanceTravelledText.text = PlayerMovement.playerMovement.gameObject.transform.position.y + " m";
+    }
+
+    //Main Menu ----------------------------------------------------------------------------------------------------------------------
     public void OpenLoadMenu()
     {
         loadOptionsParent.SetActive(true);
@@ -639,16 +648,6 @@ public class UI_Manager : MonoBehaviour
         buttonQuit.interactable = true;
         buttonOptions.interactable = true;
         buttonLoadLevels.interactable = true;
-    }
-
-    public void OpenControlsMenu()
-    {
-        controlsParent.SetActive(true);
-    }
-
-    public void CloseControlsMenu()
-    {
-        controlsParent.SetActive(false);
     }
 
     public void EnableLoadButtons()
@@ -687,14 +686,19 @@ public class UI_Manager : MonoBehaviour
         }
     }
 
-    public void UpdateResultsText()
+    //Options ------------------------------------------------------------------------------------------------------------------------
+    public void OpenControlsMenu()
     {
-        currentLevelText.text = LevelManager.levelManager.activeLevel.ToString();
-        currencyCollectedText.text = PlayerStats.playerStats.currency + " x " + PlayerStats.playerStats.currencyMultiplier + " = " + (int)(PlayerStats.playerStats.currency * PlayerStats.playerStats.currencyMultiplier) + " sc" + "\r\n" + PlayerStats.playerStats.totalCurrency + " sc";
-        if (PlayerMovement.playerMovement == null) return;
-        distanceTravelledText.text = PlayerMovement.playerMovement.gameObject.transform.position.y + " m";
+        controlsParent.SetActive(true);
     }
 
+    public void CloseControlsMenu()
+    {
+        controlsParent.SetActive(false);
+    }
+
+
+    //Lerping Coins During Gameplay -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void LerpCurrency()
     {
         foreach (GameObject currency in coinLerpList)
@@ -717,8 +721,10 @@ public class UI_Manager : MonoBehaviour
         coinLerpList = new List<GameObject>();
     }
 
+    
 
-    //Cutscene methods
+
+    //Cutscene methods ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void ShowOpeningCutscene()
     {
         state = UI_State.cutscene;
@@ -747,7 +753,8 @@ public class UI_Manager : MonoBehaviour
         {
             PlayerStats.playerStats.FirstRun = false;
             DataManager.dataManager.SavePlayerData();
-            state = UI_State.mainMenu;
+            state = UI_State.gameplay;
+            GameManager.gameManager.SwitchToGamePlay();
             openingCutsceneCanvas.gameObject.SetActive(false);
         }
         else
@@ -757,7 +764,7 @@ public class UI_Manager : MonoBehaviour
     }
 
 
-    //Tweening methods
+    //Tweening methods ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void FadeInResultsTween()
     {
         if (GameManager.gameManager.wonLevel)
@@ -782,16 +789,13 @@ public class UI_Manager : MonoBehaviour
 
     IEnumerator TweenFade(Image rendererToFade)
     {
-        Debug.Log("Tweening Fade");
         Tween fadeIn = rendererToFade.DOFade(1, (float)0.5);
         yield return fadeIn.WaitForCompletion();
-        Debug.Log("Tween Complete!");
         runEndToUpgrade.gameObject.SetActive(true);
     }
 
     public void ShowSaveIndicator()
     {
-        Debug.Log("Save fade in");
         StartCoroutine(SaveImageFade());
     }
 
@@ -802,7 +806,7 @@ public class UI_Manager : MonoBehaviour
     }
 
 
-    //methods to toggle active canvas based on state
+    //methods to toggle active canvas based on state -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void MainMenu()
     {
         mainMenuCanvas.enabled = true;

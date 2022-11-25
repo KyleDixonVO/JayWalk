@@ -6,6 +6,9 @@ public class UpgradeManager : MonoBehaviour
 {
     public static UpgradeManager upgradeManager;
 
+    //arrays of tier values, their associated costs, and the current tier of each upgrade type
+
+    //Swap speed----------------------------------------------------------------------------------------------------------------------------------------------
     public float[] swapSpeedTiers = new float[]
     {
         1.0f, 2f, 4f, 8f, 16f, 32f
@@ -16,6 +19,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int currentSwapTier;
 
+    //Jump Cooldown ------------------------------------------------------------------------------------------------------------------------------------------
     public float[] jumpCooldownTiers = new float[]
     {
         3.0f, 2.7f, 2.4f, 2.1f, 1.8f, 1.5f
@@ -26,6 +30,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int currentJumpCoolTier;
 
+    //Max Health----------------------------------------------------------------------------------------------------------------------------------------------
     public float[] maxHealthTiers = new float[]
     {
         3, 4, 5, 6, 7, 8
@@ -36,6 +41,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int currentMaxHealthTier;
 
+    //Jump I Frames--------------------------------------------------------------------------------------------------------------------------------------------
     public float[] jumpIFrameTiers = new float[]
     {
         0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f
@@ -46,6 +52,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int currentJumpIFrameTier;
 
+    //Currency Multiplier-------------------------------------------------------------------------------------------------------------------------------------
     public float[] currencyMultiplierTiers = new float[]
     {
         1.0f, 1.2f, 1.5f, 1.9f, 2.4f, 3.0f
@@ -56,6 +63,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int currentMultiplierTier;
 
+    //Glide Time----------------------------------------------------------------------------------------------------------------------------------------------
     public float[] glideTimeTiers = new float[]
     {
         0.0f, 0.5f, 1.0f, 1.5f, 2.0f, 2.5f
@@ -66,6 +74,7 @@ public class UpgradeManager : MonoBehaviour
     };
     public int currentGlideTier;
 
+    //Wings----------------------------------------------------------------------------------------------------------------------------------------------------
     public float[] wingsEnabledTiers = new float[]
     {
         0.0f, 1.0f
@@ -90,6 +99,7 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
+    //methods to purchase the next tier of an upgrade
     public void UpgradeSwapSpeed()
     {
         if (currentSwapTier == swapSpeedTiers.Length - 1)
@@ -105,6 +115,10 @@ public class UpgradeManager : MonoBehaviour
             PlayerStats.playerStats.totalCurrency -= swapSpeedCosts[currentSwapTier];
             SoundManager.soundManager.PlayPurchaseAudio();
             Debug.Log(PlayerStats.playerStats.laneSwapSpeed);
+        }
+        else
+        {
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
         }
     }
 
@@ -123,6 +137,10 @@ public class UpgradeManager : MonoBehaviour
             SoundManager.soundManager.PlayPurchaseAudio();
             Debug.Log(PlayerStats.playerStats.jumpCooldown);
         }
+        else
+        {
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
+        }
     }
 
     public void UpgradeMaxHealth()
@@ -139,6 +157,10 @@ public class UpgradeManager : MonoBehaviour
             PlayerStats.playerStats.totalCurrency -= maxHealthCosts[currentMaxHealthTier];
             SoundManager.soundManager.PlayPurchaseAudio();
             Debug.Log(PlayerStats.playerStats.maxHealth);
+        }
+        else
+        {
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
         }
     }
 
@@ -157,6 +179,10 @@ public class UpgradeManager : MonoBehaviour
             SoundManager.soundManager.PlayPurchaseAudio();
             Debug.Log(PlayerStats.playerStats.jumpIFrames);
         }
+        else
+        {
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
+        }
     }
 
     public void UpgradeCurrencyMultiplier()
@@ -173,6 +199,10 @@ public class UpgradeManager : MonoBehaviour
             PlayerStats.playerStats.totalCurrency -= currencyMultiplierCosts[currentMultiplierTier];
             SoundManager.soundManager.PlayPurchaseAudio();
             Debug.Log(PlayerStats.playerStats.currencyMultiplier);
+        }
+        else
+        {
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
         }
 
     }
@@ -192,6 +222,10 @@ public class UpgradeManager : MonoBehaviour
             PlayerStats.playerStats.totalCurrency -= glideTimeCosts[currentGlideTier];
             SoundManager.soundManager.PlayPurchaseAudio();
             Debug.Log(PlayerStats.playerStats.glideTime);
+        }
+        else
+        {
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
         }
 
     }
@@ -213,6 +247,10 @@ public class UpgradeManager : MonoBehaviour
             Debug.Log("Acquired Wings: " + PlayerStats.playerStats.wingsEnabled);
             SoundManager.soundManager.PlayPurchaseAudio();
             Debug.Log(PlayerStats.playerStats.wingsEnabled);
+        }
+        else
+        {
+            SoundManager.soundManager.PlayInsufficientFundsAudio();
         }
 
     }

@@ -37,6 +37,7 @@ public class DataManager : MonoBehaviour
 
     }
 
+    //saves out volume prefs
     public void SaveGlobalData()
     {
         BinaryFormatter binaryFormatter = new BinaryFormatter();
@@ -53,6 +54,7 @@ public class DataManager : MonoBehaviour
         saving = false;
     }
 
+    //loads volume prefs
     public void LoadGlobalData()
     {
         if (File.Exists(Application.persistentDataPath + "/globalData.dat"))
@@ -105,6 +107,8 @@ public class DataManager : MonoBehaviour
         UI_Manager.ui_manager.ShowSaveIndicator();
         PlayerData playerData = new PlayerData();
 
+        //set stored values equal to current player stats
+
         playerData.maxHealth = PlayerStats.playerStats.maxHealth;
         playerData.health = PlayerStats.playerStats.health;
         playerData.currency = PlayerStats.playerStats.currency;
@@ -120,6 +124,8 @@ public class DataManager : MonoBehaviour
         playerData.FirstRun = PlayerStats.playerStats.FirstRun;
         playerData.totalCurrency = PlayerStats.playerStats.totalCurrency;
         playerData.glideTime = PlayerStats.playerStats.glideTime;
+
+        //set stored values equal to current upgrade tiers
 
         playerData.currentGlideTier = UpgradeManager.upgradeManager.currentGlideTier;
         playerData.currentJumpCoolTier = UpgradeManager.upgradeManager.currentJumpCoolTier;
@@ -162,6 +168,8 @@ public class DataManager : MonoBehaviour
             PlayerStats.playerStats.totalCurrency = playerData.totalCurrency;
             PlayerStats.playerStats.glideTime = playerData.glideTime;
 
+            //set upgrade tiers to stored values
+
             UpgradeManager.upgradeManager.currentGlideTier = playerData.currentGlideTier;
             UpgradeManager.upgradeManager.currentJumpCoolTier = playerData.currentJumpCoolTier;
             UpgradeManager.upgradeManager.currentJumpIFrameTier = playerData.currentJumpIFrameTier;
@@ -172,10 +180,12 @@ public class DataManager : MonoBehaviour
         }
         else
         {
+            //ensures there are always stats to pull from
             ResetPlayerData();
         }
     }
 
+    //containers to store stats as files
     [Serializable]
     public class PlayerData 
     {
