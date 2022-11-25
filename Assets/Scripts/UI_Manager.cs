@@ -35,6 +35,7 @@ public class UI_Manager : MonoBehaviour
     public TMP_Text maxHealthButton;
     public TMP_Text jumpIFramesButton;
     public TMP_Text wingsButton;
+    public GameObject PipParent;
 
     [Header("Result Screen UI Elements")]
     //result UI elements
@@ -153,6 +154,7 @@ public class UI_Manager : MonoBehaviour
         Color color = savingImage.GetComponent<Image>().color;
         color.a = 0;
         savingImage.GetComponent<Image>().color = color;
+        PipParent = GameObject.Find("PipParent");
     }
 
     // Update is called once per frame
@@ -402,6 +404,8 @@ public class UI_Manager : MonoBehaviour
             glideButtonText.text = UpgradeManager.upgradeManager.glideTimeCosts[UpgradeManager.upgradeManager.currentGlideTier + 1] + " SC";
         }
 
+        UpdatePips();
+
         if (caller == null) return;
         switch (caller.name)
         {
@@ -527,6 +531,93 @@ public class UI_Manager : MonoBehaviour
                 break;
         }
 
+    }
+
+    public void UpdatePips()
+    {
+        for (int i = 0; i < PipParent.transform.childCount; i++)
+        {
+            for (int j = 0; j < PipParent.transform.GetChild(i).transform.childCount; j++)
+            {
+                if (i == 0)
+                {
+                    if (UpgradeManager.upgradeManager.currentJumpCoolTier >= j)
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.green;
+                    }
+                    else
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.white;
+                    }
+                }
+                else if (i == 1)
+                {
+                    if (UpgradeManager.upgradeManager.currentMultiplierTier >= j)
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.green;
+                    }
+                    else
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.white;
+                    }
+                }
+                else if (i == 2)
+                {
+                    if (UpgradeManager.upgradeManager.currentMaxHealthTier >= j)
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.green;
+                    }
+                    else
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.white;
+                    }
+                }
+                else if (i == 3)
+                {
+                    if (UpgradeManager.upgradeManager.currentJumpIFrameTier >= j)
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.green;
+                    }
+                    else
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.white;
+                    }
+                }
+                else if (i == 4)
+                {
+                    if (UpgradeManager.upgradeManager.currentWingEnabledTier >= j)
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.green;
+                    }
+                    else
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.white;
+                    }
+                }
+                else if (i == 5)
+                {
+                    if (UpgradeManager.upgradeManager.currentGlideTier >= j)
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.green;
+                    }
+                    else
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.white;
+                    }
+                }
+                else if (i == 6)
+                {
+                    if (UpgradeManager.upgradeManager.currentSwapTier >= j)
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.green;
+                    }
+                    else
+                    {
+                        PipParent.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().color = Color.white;
+                    }
+                }
+            }
+        }
     }
 
     public void OpenLoadMenu()
