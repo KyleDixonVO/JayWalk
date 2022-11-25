@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private bool gameplayActive;
+    public bool gameplayActive;
     public bool escapePressed = false;
     public bool gameWon = false;
     public bool wonLevel = false;
@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.M))
             {
-                //PlayerStats.playerStats.totalCurrency = 900000;
+                 //PlayerStats.playerStats.totalCurrency = 900000;
             }
 
             if (Input.GetKeyDown(KeyCode.V))
@@ -144,12 +144,10 @@ public class GameManager : MonoBehaviour
         if (UI_Manager.ui_manager.state == UI_Manager.UI_State.gameplay)
         {
             SoundManager.soundManager.PlayGameplayMusic();
-            Debug.Log("Playing Gameplay Music");
         }
         else if (UI_Manager.ui_manager.state == UI_Manager.UI_State.mainMenu)
         {
             SoundManager.soundManager.PlayMainMenuMusic();
-            Debug.Log("Playing Main Menu Music");
         }
         else if (UI_Manager.ui_manager.state == UI_Manager.UI_State.paused)
         {
@@ -206,6 +204,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(0);
         gameplayActive = false;
         UI_Manager.ui_manager.SwitchMainMenu();
+        ResetRun();
     }
 
     public void QuitGame()

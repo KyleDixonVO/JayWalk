@@ -22,7 +22,7 @@ public class LevelManager : MonoBehaviour
         }
         else if (levelManager != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 

@@ -19,6 +19,8 @@ public class UI_Manager : MonoBehaviour
     public Slider healthSlider;
     public Slider completionSlider;
     public Slider jumpSlider;
+    public Slider glideSlider;
+    public GameObject glideSliderParent;
     public float HealthFraction;
     public GameObject coinLerpEndpoint;
     public List<GameObject> coinLerpList;
@@ -215,7 +217,6 @@ public class UI_Manager : MonoBehaviour
                 {
                     buttonReset.interactable = true;
                 }
-                Debug.Log(returnFromOptions);
                 break;
 
             case UI_State.win:
@@ -601,13 +602,29 @@ public class UI_Manager : MonoBehaviour
         CurrencyText.text = "Scum Coin: " + PlayerStats.playerStats.currency;
         HealthText.text = "Health: " + PlayerStats.playerStats.health + "/" + PlayerStats.playerStats.maxHealth;
         CompletionText.text = "Level Progress: ";
-        jumpText.text = "Jump Charge: ";
+        jumpText.text = "Jump Charge";
 
         HealthFraction = ((float)PlayerStats.playerStats.health / (float)PlayerStats.playerStats.maxHealth);
-        //Debug.Log(HealthFraction);
         healthSlider.value = HealthFraction;
         levelLength = LaneParent.laneParent.levelLength;
         completionSlider.value = ((float)PlayerMovement.playerMovement.transform.position.y / (float)levelLength);
+
+        if (!PlayerStats.playerStats.wingsEnabled || UpgradeManager.upgradeManager.currentGlideTier == 0)
+        {
+            glideSliderParent.SetActive(false);
+        }
+        else if(PlayerMovement.playerMovement != null)
+        {
+            glideSliderParent.SetActive(true);
+            if (PlayerMovement.playerMovement.elapsedGlideTime == 0)
+            {
+                glideSlider.value = 1.0f;
+            }
+            else
+            {
+                glideSlider.value = 1- ((float)PlayerMovement.playerMovement.elapsedGlideTime / PlayerStats.playerStats.glideTime);
+            }
+        }
 
         if (PlayerStats.playerStats.canJump)
         {
@@ -727,6 +744,8 @@ public class UI_Manager : MonoBehaviour
     //Cutscene methods ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void ShowOpeningCutscene()
     {
+        openingCutsceneCanvas.gameObject.SetActive(true);
+        Debug.Log("Showing opening cutscene");
         state = UI_State.cutscene;
         activeStartFrame = 0;
         startingCutsceneFrameParent.GetComponent<Image>().sprite = startingCutsceneFrames[activeStartFrame];
@@ -753,6 +772,7 @@ public class UI_Manager : MonoBehaviour
         {
             PlayerStats.playerStats.FirstRun = false;
             DataManager.dataManager.SavePlayerData();
+            //state = UI_State.mainMenu;
             state = UI_State.gameplay;
             GameManager.gameManager.SwitchToGamePlay();
             openingCutsceneCanvas.gameObject.SetActive(false);
