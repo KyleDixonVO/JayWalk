@@ -82,6 +82,9 @@ public class UI_Manager : MonoBehaviour
     public Slider musicVolumeSlider;
     public Slider fxVolumeSlider;
     public Button buttonReset;
+    public Button buttonCloseOptions;
+    public Button buttonControls;
+    public Button optionsToMain;
     public GameObject controlMenuParent;
 
     [Header("End Cutscene UI Elements")]
@@ -105,6 +108,9 @@ public class UI_Manager : MonoBehaviour
 
     public GameObject savingObjectParent;
     public GameObject savingImage;
+
+    [Header("Pause Menu Elements")]
+    public GameObject ResetConfirmationParent;
 
     [Header("Event Elements")]
     //Event elements
@@ -144,6 +150,7 @@ public class UI_Manager : MonoBehaviour
     void Start()
     {
         controlMenuParent.SetActive(false);
+        ResetConfirmationParent.SetActive(false);
         coinLerpList = new List<GameObject>();
         currencyText = GameObject.Find("CurrencyText").GetComponent<TMP_Text>();
         healthText = GameObject.Find("HealthText").GetComponent<TMP_Text>();
@@ -314,6 +321,24 @@ public class UI_Manager : MonoBehaviour
     public void SwitchResults()
     {
         state = UI_State.results;
+    }
+
+    public void OpenResetMenu()
+    {
+        ResetConfirmationParent.SetActive(true);
+        buttonCloseOptions.interactable = false;
+        optionsToMain.interactable = false;
+        buttonControls.interactable = false;
+        buttonReset.interactable = false;
+    }
+
+    public void CloseResetMenu()
+    {
+        ResetConfirmationParent.SetActive(false);
+        buttonCloseOptions.interactable = true;
+        optionsToMain.interactable = true;
+        buttonControls.interactable = true;
+        buttonReset.interactable = true;
     }
 
     //Methods to update UI elements related to a certain state ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
