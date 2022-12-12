@@ -25,7 +25,7 @@ public class UI_Manager : MonoBehaviour
     public GameObject coinLerpEndpoint;
     public List<GameObject> coinLerpList;
 
-    private float lerpSpeed = 0.3f;
+    private float lerpSpeed = 0.5f;
     private float distFromLerpTarget = 0.5f;
 
     [Header("Upgrade Screen UI Elements")]
@@ -170,6 +170,14 @@ public class UI_Manager : MonoBehaviour
         EvaluateSwitch();
     }
 
+    private void FixedUpdate()
+    {
+        if (state == UI_State.gameplay)
+        {
+            LerpCurrency();
+        }
+    }
+
     private void EvaluateSwitch()
     {
         switch (state)
@@ -186,7 +194,6 @@ public class UI_Manager : MonoBehaviour
                     coinLerpEndpoint = GameObject.Find("coinLerpEndpoint");
                 }
                 GameplayUpdate();
-                LerpCurrency();
 
                 if (GameManager.gameManager.gameWon == true)
                 {
