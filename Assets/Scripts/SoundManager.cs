@@ -16,6 +16,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource insufficientFundsAudio;
     public AudioSource purchaseAudio;
     public AudioSource gemAudio;
+    public AudioSource jumpChargeAudio;
     public static SoundManager soundManager;
 
     void Awake()
@@ -129,6 +130,12 @@ public class SoundManager : MonoBehaviour
         gemAudio.Play();
     }
 
+    public void PlayJumpChargeAudio()
+    {
+        if (jumpChargeAudio.isPlaying) return;
+        jumpChargeAudio.Play();
+    }
+
     public void StopMusic()
     {
         gameplayMusic.Stop();
@@ -150,6 +157,7 @@ public class SoundManager : MonoBehaviour
         menuBackAudio.volume = DataManager.dataManager.FXVolume;
         menuSelectionAudio.volume = DataManager.dataManager.FXVolume;
         gemAudio.volume = DataManager.dataManager.FXVolume;
+        jumpChargeAudio.volume = DataManager.dataManager.FXVolume;
     }
 
     private void TurnOffPlayOnAwake()
@@ -166,5 +174,6 @@ public class SoundManager : MonoBehaviour
         menuBackAudio.playOnAwake = false;
         menuSelectionAudio.playOnAwake = false;
         gemAudio.playOnAwake = false;
+        jumpChargeAudio.playOnAwake = false;
     }
 }

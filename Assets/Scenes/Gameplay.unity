@@ -1429,6 +1429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6760fd704e7ec874187375a6f63affb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameplayActive: 0
   escapePressed: 0
   gameWon: 0
   wonLevel: 0
@@ -2330,14 +2331,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37aab38150da3ca4b8c0f64ed3c1d844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrencyText: {fileID: 0}
-  HealthText: {fileID: 0}
-  CompletionText: {fileID: 0}
+  currencyText: {fileID: 0}
+  healthText: {fileID: 0}
+  completionText: {fileID: 0}
   jumpText: {fileID: 0}
   healthSlider: {fileID: 0}
   completionSlider: {fileID: 0}
   jumpSlider: {fileID: 0}
-  HealthFraction: 0
+  glideSlider: {fileID: 0}
+  glideSliderParent: {fileID: 0}
   coinLerpEndpoint: {fileID: 0}
   coinLerpList: []
   totalCurrencyText: {fileID: 0}
@@ -2350,6 +2352,7 @@ MonoBehaviour:
   maxHealthButton: {fileID: 0}
   jumpIFramesButton: {fileID: 0}
   wingsButton: {fileID: 0}
+  PipParent: {fileID: 0}
   currentLevelText: {fileID: 0}
   currencyCollectedText: {fileID: 0}
   distanceTravelledText: {fileID: 0}
@@ -2375,20 +2378,24 @@ MonoBehaviour:
   lock2: {fileID: 0}
   lock3: {fileID: 0}
   loadOptionsOpen: 0
-  MusicVolumeSlider: {fileID: 0}
-  FXVolumeSlider: {fileID: 0}
+  musicVolumeSlider: {fileID: 0}
+  fxVolumeSlider: {fileID: 0}
+  buttonReset: {fileID: 0}
+  buttonCloseOptions: {fileID: 0}
+  buttonControls: {fileID: 0}
+  optionsToMain: {fileID: 0}
+  controlMenuParent: {fileID: 0}
   endingCutsceneParent: {fileID: 0}
   endingCutSceneFrames: []
-  activeEndFrame: 0
   startingCutsceneFrameParent: {fileID: 0}
   startingCutsceneFrames: []
-  activeStartFrame: 0
   resultsFadeParent: {fileID: 0}
   imageLevelComplete: {fileID: 0}
   imageRunEnded: {fileID: 0}
-  runEndToUpgrade: {fileID: 0}
+  buttonRunEndToUpgrade: {fileID: 0}
   savingObjectParent: {fileID: 0}
   savingImage: {fileID: 0}
+  ResetConfirmationParent: {fileID: 0}
   caller: {fileID: 0}
   state: 0
   returnFromPause: 0
@@ -3084,6 +3091,90 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 521660316}
   m_CullTransparentMesh: 1
+--- !u!1 &567251027
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 567251028}
+  - component: {fileID: 567251029}
+  m_Layer: 0
+  m_Name: Shadow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &567251028
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567251027}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.445, z: 0}
+  m_LocalScale: {x: 1.2, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 888913576}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &567251029
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567251027}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 9
+  m_Sprite: {fileID: 21300000, guid: a6248e1f1ae5afa4a8e113cab5c8de2a, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 11.7, y: 3.4}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &574434507
 GameObject:
   m_ObjectHideFlags: 0
@@ -4418,6 +4509,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 70931184, guid: 82ab6fd763d364c4a9359f01a01deede, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 70931184, guid: 82ab6fd763d364c4a9359f01a01deede, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4706116209801749894, guid: 82ab6fd763d364c4a9359f01a01deede, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.3
@@ -4478,6 +4577,10 @@ PrefabInstance:
       propertyPath: wingsObject
       value: 
       objectReference: {fileID: 888913574}
+    - target: {fileID: 5051182585386555978, guid: 82ab6fd763d364c4a9359f01a01deede, type: 3}
+      propertyPath: shadowObject
+      value: 
+      objectReference: {fileID: 567251027}
     - target: {fileID: 5051182585386555982, guid: 82ab6fd763d364c4a9359f01a01deede, type: 3}
       propertyPath: m_Name
       value: Player
@@ -4545,6 +4648,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!4 &888913576 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5051182585386555976, guid: 82ab6fd763d364c4a9359f01a01deede, type: 3}
+  m_PrefabInstance: {fileID: 888913573}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &900235338
 GameObject:
   m_ObjectHideFlags: 0

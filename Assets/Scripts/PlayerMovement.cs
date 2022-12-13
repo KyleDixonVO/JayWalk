@@ -19,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 Endpoint;
     public GameObject wingsObject;
+    public GameObject shadowObject;
     public static PlayerMovement playerMovement;
     public Animator PlayerAnim;
 
@@ -44,6 +45,9 @@ public class PlayerMovement : MonoBehaviour
         elapsedTime = PlayerStats.playerStats.jumpCooldown;
         atEndOfLevel = false;
         wingsObject.SetActive(false);
+        Color color = new Color();
+        color.a = 0;
+        shadowObject.GetComponent<SpriteRenderer>().color = color;
     }
 
     // Update is called once per frame
@@ -237,6 +241,9 @@ public class PlayerMovement : MonoBehaviour
         atEndOfLevel = false;
         gliding = false;
         wingsObject.SetActive(false);
+        Color color = new Color();
+        color.a = 0;
+        shadowObject.GetComponent<SpriteRenderer>().color = color;
         elapsedGlideTime = 0;
     }
 
@@ -254,7 +261,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (elapsedTime >= PlayerStats.playerStats.jumpCooldown)
         {
+            
             PlayerStats.playerStats.canJump = true;
+            if (runningJumpCooldown == true)
+            {
+                SoundManager.soundManager.PlayJumpChargeAudio();
+            }
             runningJumpCooldown = false;
         }
 
@@ -298,6 +310,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 //turns player sprite grey to show invincibility
                 gameObject.GetComponent<SpriteRenderer>().DOColor(Color.grey, 0.1f);
+                shadowObject.GetComponent<SpriteRenderer>().DOFade(1, timer / 2);
             }
             PlayerStats.playerStats.isJumping = true;
             runningJumpIFrames = true;
@@ -312,6 +325,7 @@ public class PlayerMovement : MonoBehaviour
             SoundManager.soundManager.PlayLandingAudio();
             //returns the player sprite to normal
             gameObject.GetComponent<SpriteRenderer>().DOColor(Color.white, 0.1f);
+            shadowObject.GetComponent<SpriteRenderer>().DOFade(0, timer / 2);
         }
     }
 
